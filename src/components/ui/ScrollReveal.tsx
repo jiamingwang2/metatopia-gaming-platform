@@ -1,74 +1,95 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { motion, useInView, useAnimation, Variants } from 'framer-motion'
 import { cn } from '../../lib/utils'
 
+// 滚动显示动画类型
+type RevealDirection = 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale' | 'rotate'
+
+// 滚动显示组件属性
 interface ScrollRevealProps {
   children: React.ReactNode
-  className?: string
-  direction?: 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale' | 'rotate'
+  direction?: RevealDirection
   delay?: number
   duration?: number
   distance?: number
-  threshold?: number
+  className?: string
   triggerOnce?: boolean
+  threshold?: number
   cascade?: boolean
-  cascadeDelay?: number
   stagger?: number
-  viewport?: {
-    once?: boolean
-    margin?: string
-    amount?: number | 'some' | 'all'
-  }
 }
 
-const ScrollReveal: React.FC<ScrollRevealProps> = ({
+// 动画变体定义
+const createVariants = (direction: RevealDirection, distance: number): Variants => {
+  const variants: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 15
+      }
+    }
+  }
+
+  switch (direction) {
+    case 'up':
+      variants.hidden = { opacity: 0, y: distance }
+      variants.visible = { opacity: 1, y: 0, ...variants.visible }
+      break
+    case 'down':
+      variants.hidden = { opacity: 0, y: -distance }
+      variants.visible = { opacity: 1, y: 0, ...variants.visible }
+      break
+    case 'left':
+      variants.hidden = { opacity: 0, x: distance }
+      variants.visible = { opacity: 1, x: 0, ...variants.visible }
+      break
+    case 'right':
+      variants.hidden = { opacity: 0, x: -distance }
+      variants.visible = { opacity: 1, x: 0, ...variants.visible }
+      break
+    case 'fade':
+      variants.hidden = { opacity: 0 }
+      variants.visible = { opacity: 1, ...variants.visible }
+      break
+    case 'scale':
+      variants.hidden = { opacity: 0, scale: 0.8 }
+      variants.visible = { opacity: 1, scale: 1, ...variants.visible }
+      break
+    case 'rotate':
+      variants.hidden = { opacity: 0, rotate: -10, scale: 0.9 }
+      variants.visible = { opacity: 1, rotate: 0, scale: 1, ...variants.visible }
+      break
+    default:
+      variants.hidden = { opacity: 0, y: distance }
+      variants.visible = { opacity: 1, y: 0, ...variants.visible }
+  }
+
+  return variants
+}
+
+export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
-  className,
   direction = 'up',
   delay = 0,
   duration = 0.6,
   distance = 50,
-  threshold = 0.1,
+  className,
   triggerOnce = true,
+  threshold = 0.1,
   cascade = false,
-  cascadeDelay = 0.1,
-  stagger = 0,
-  viewport
+  stagger = 0.1
 }) => {
   const ref = useRef(null)
   const isInView = useInView(ref, {
     once: triggerOnce,
-    amount: viewport?.amount || threshold
+    margin: '-10px',
+    amount: threshold
   })
   const controls = useAnimation()
 
-  const variants: Variants = {
-    hidden: {
-      opacity: 0,
-      ...(direction === 'up' && { y: distance }),
-      ...(direction === 'down' && { y: -distance }),
-      ...(direction === 'left' && { x: distance }),
-      ...(direction === 'right' && { x: -distance }),
-      ...(direction === 'scale' && { scale: 0.8 }),
-      ...(direction === 'rotate' && { rotate: -10, scale: 0.9 })
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      x: 0,
-      scale: 1,
-      rotate: 0,
-      transition: {
-        duration,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        ...(stagger > 0 && {
-          staggerChildren: stagger,
-          delayChildren: delay
-        })
-      }
-    }
-  }
+  const variants = createVariants(direction, distance)
 
   useEffect(() => {
     if (isInView) {
@@ -78,50 +99,52 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     }
   }, [isInView, controls, triggerOnce])
 
-  // 如果启用了cascade效果，为子元素添加递增延迟
-  const processChildren = (children: React.ReactNode): React.ReactNode => {
-    if (!cascade) return children
-
-    return React.Children.map(children, (child, index) => {
-      if (React.isValidElement(child)) {
-        return (
+  // 如果启用了级联效果，为子元素添加交错动画
+  if (cascade && React.Children.count(children) > 1) {
+    return (
+      <div ref={ref} className={className}>
+        {React.Children.map(children, (child, index) => (
           <motion.div
-            variants={{
-              hidden: { opacity: 0, y: direction === 'up' ? 20 : direction === 'down' ? -20 : 0 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: duration * 0.8,
-                  delay: index * cascadeDelay
-                }
-              }
+            key={index}
+            variants={variants}
+            initial="hidden"
+            animate={controls}
+            transition={{
+              duration,
+              delay: delay + index * stagger,
+              type: 'spring',
+              stiffness: 100,
+              damping: 15
             }}
           >
             {child}
           </motion.div>
-        )
-      }
-      return child
-    })
+        ))}
+      </div>
+    )
   }
 
   return (
     <motion.div
       ref={ref}
+      className={className}
+      variants={variants}
       initial="hidden"
       animate={controls}
-      variants={variants}
-      className={cn(className)}
+      transition={{
+        duration,
+        delay,
+        type: 'spring',
+        stiffness: 100,
+        damping: 15
+      }}
     >
-      {processChildren(children)}
+      {children}
     </motion.div>
   )
 }
 
-export default ScrollReveal
-
-// 预设的滚动动画组件
+// 预设组件
 export const FadeInUp: React.FC<Omit<ScrollRevealProps, 'direction'>> = (props) => (
   <ScrollReveal direction="up" {...props} />
 )
@@ -146,12 +169,22 @@ export const RotateIn: React.FC<Omit<ScrollRevealProps, 'direction'>> = (props) 
   <ScrollReveal direction="rotate" {...props} />
 )
 
-// 级联动画组件
 export const CascadeReveal: React.FC<Omit<ScrollRevealProps, 'cascade'>> = (props) => (
-  <ScrollReveal cascade={true} cascadeDelay={0.1} {...props} />
+  <ScrollReveal cascade={true} {...props} />
 )
 
-// 交错动画组件
-export const StaggerReveal: React.FC<Omit<ScrollRevealProps, 'stagger'>> = (props) => (
-  <ScrollReveal stagger={0.1} {...props} />
+export const StaggerReveal: React.FC<ScrollRevealProps> = (props) => (
+  <ScrollReveal cascade={true} stagger={0.2} {...props} />
 )
+
+export default {
+  ScrollReveal,
+  FadeInUp,
+  FadeInDown,
+  FadeInLeft,
+  FadeInRight,
+  ScaleIn,
+  RotateIn,
+  CascadeReveal,
+  StaggerReveal
+}
