@@ -199,188 +199,259 @@ export const EnhancedInput: React.FC<EnhancedInputProps> = ({
           )}
         </AnimatePresence>
 
-        {/* Status Icon */}
-        <AnimatePresence>
-          {(hasError || isValid || loading) && (
-            <motion.div
-              className="absolute left-3 flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-            >
-              {getIcon()}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Input Field */}
-        <RippleEffect className="flex-1">
-          <input
-            ref={inputRef}
-            type={isPassword && showPassword ? 'text' : type}
-            value={internalValue}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            placeholder={placeholder}
-            disabled={disabled}
-            required={required}
-            autoComplete={autoComplete}
-            maxLength={maxLength}
-            pattern={pattern}
-            className={cn(
-              'w-full h-full px-12 bg-transparent text-white placeholder-gray-500',
-              'focus:outline-none transition-all duration-200',
-              disabled && 'cursor-not-allowed'
-            )}
-          />
-        </RippleEffect>
+        <motion.input
+          ref={inputRef}
+          type={isPassword && !showPassword ? 'password' : type === 'password' ? 'text' : type}
+          value={internalValue}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder={isFocused ? placeholder : ''}
+          disabled={disabled}
+          autoComplete={autoComplete}
+          maxLength={maxLength}
+          pattern={pattern}
+          className={cn(
+            'w-full bg-transparent border-0 outline-none text-white placeholder-gray-500',
+            'transition-all duration-200',
+            (icon || (!hasError && !isValid && !loading)) ? 'pl-12' : 'pl-4',
+            (isPassword || hasError || isValid || loading) ? 'pr-12' : 'pr-4'
+          )}
+          whileFocus={{ scale: 1.01 }}
+          transition={{ duration: 0.2 }}
+        />
 
-        {/* Right Actions */}
+        {/* Right Icons */}
         <div className="absolute right-3 flex items-center space-x-2">
-          {/* Password Toggle */}
-          {isPassword && (
-            <motion.button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="text-gray-400 hover:text-white transition-colors duration-200"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              disabled={disabled}
-            >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </motion.button>
-          )}
+          <AnimatePresence>
+            {/* Status Icon */}
+            {(hasError || isValid || loading) && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, x: 10 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.8, x: 10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {getIcon()}
+              </motion.div>
+            )}
 
-          {/* Clear Button */}
-          {hasValue && !disabled && (
-            <motion.button
-              type="button"
-              onClick={() => {
-                setInternalValue('')
-                onChange?.('')
-                inputRef.current?.focus()
-              }}
-              className="text-gray-400 hover:text-white transition-colors duration-200"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-            >
-              <X className="w-4 h-4" />
-            </motion.button>
-          )}
+            {/* Password Toggle */}
+            {isPassword && (
+              <motion.button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-400 hover:text-white transition-colors duration-200"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
-      {/* Error Message */}
+      {/* Character Count */}
       <AnimatePresence>
-        {hasError && (
+        {showCharCount && maxLength && (
           <motion.div
-            className="mt-2 text-sm text-red-500 flex items-center space-x-2"
+            className="absolute right-2 -bottom-6 text-xs text-gray-500"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            <AlertCircle className="w-4 h-4" />
-            <span>{hasError}</span>
+            {internalValue.length}/{maxLength}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Character Count */}
-      {showCharCount && maxLength && (
-        <motion.div
-          className="mt-1 text-xs text-gray-500 text-right"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isFocused ? 1 : 0.7 }}
-          transition={{ duration: 0.2 }}
-        >
-          {internalValue.length}/{maxLength}
-        </motion.div>
-      )}
+      {/* Error/Success Message */}
+      <AnimatePresence>
+        {(hasError || success) && (
+          <motion.div
+            className={cn(
+              'mt-2 text-sm flex items-center space-x-2',
+              hasError ? 'text-red-500' : 'text-green-500'
+            )}
+            initial={{ opacity: 0, y: -10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -10, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {hasError ? (
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            ) : (
+              <Check className="w-4 h-4 flex-shrink-0" />
+            )}
+            <span>{hasError || (success && '输入有效')}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
-// 浮动提示组件
-interface FloatingTooltipProps {
+// 增强的按钮组件
+interface EnhancedButtonProps {
   children: React.ReactNode
-  content: string
-  position?: 'top' | 'bottom' | 'left' | 'right'
-  delay?: number
+  onClick?: () => void
+  type?: 'button' | 'submit' | 'reset'
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
+  size?: 'sm' | 'md' | 'lg'
+  loading?: boolean
+  disabled?: boolean
+  className?: string
+  icon?: React.ReactNode
+  iconPosition?: 'left' | 'right'
+  fullWidth?: boolean
+  ripple?: boolean
+  magnetic?: boolean
+}
+
+export const EnhancedButton: React.FC<EnhancedButtonProps> = ({
+  children,
+  onClick,
+  type = 'button',
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  disabled = false,
+  className,
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
+  ripple = true,
+  magnetic = false
+}) => {
+  const [isPressed, setIsPressed] = useState(false)
+
+  const sizeClasses = {
+    sm: 'h-9 px-4 text-sm',
+    md: 'h-11 px-6 text-base',
+    lg: 'h-13 px-8 text-lg'
+  }
+
+  const variantClasses = {
+    primary: 'bg-primary-600 hover:bg-primary-700 text-white border-primary-600',
+    secondary: 'bg-gray-700 hover:bg-gray-600 text-white border-gray-700',
+    outline: 'bg-transparent hover:bg-primary-600/10 text-primary-400 border-primary-600',
+    ghost: 'bg-transparent hover:bg-gray-800 text-gray-300 border-transparent',
+    danger: 'bg-red-600 hover:bg-red-700 text-white border-red-600'
+  }
+
+  const handleClick = () => {
+    if (disabled || loading) return
+    setIsPressed(true)
+    onClick?.()
+    setTimeout(() => setIsPressed(false), 150)
+  }
+
+  const buttonContent = (
+    <motion.button
+      type={type}
+      onClick={handleClick}
+      disabled={disabled || loading}
+      className={cn(
+        'relative inline-flex items-center justify-center rounded-lg border-2 font-medium',
+        'transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50',
+        'disabled:opacity-50 disabled:cursor-not-allowed',
+        sizeClasses[size],
+        variantClasses[variant],
+        fullWidth && 'w-full',
+        className
+      )}
+      whileHover={!disabled && !loading ? { scale: 1.02 } : {}}
+      whileTap={!disabled && !loading ? { scale: 0.98 } : {}}
+      animate={{
+        scale: isPressed ? 0.95 : 1
+      }}
+      transition={{ duration: 0.1 }}
+    >
+      {/* Loading Spinner */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Loader2 className="w-5 h-5 animate-spin" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Button Content */}
+      <motion.div
+        className={cn(
+          'flex items-center space-x-2',
+          loading && 'opacity-0'
+        )}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        {icon && iconPosition === 'left' && (
+          <motion.div
+            initial={{ x: -5, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {icon}
+          </motion.div>
+        )}
+        <span>{children}</span>
+        {icon && iconPosition === 'right' && (
+          <motion.div
+            initial={{ x: 5, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {icon}
+          </motion.div>
+        )}
+      </motion.div>
+    </motion.button>
+  )
+
+  if (ripple) {
+    return (
+      <RippleEffect className="inline-block">
+        {buttonContent}
+      </RippleEffect>
+    )
+  }
+
+  return buttonContent
+}
+
+// 表单组件
+interface FormFieldProps {
+  children: React.ReactNode
   className?: string
 }
 
-export const FloatingTooltip: React.FC<FloatingTooltipProps> = ({
-  children,
-  content,
-  position = 'top',
-  delay = 500,
-  className
-}) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
-
-  const showTooltip = () => {
-    const id = setTimeout(() => setIsVisible(true), delay)
-    setTimeoutId(id)
-  }
-
-  const hideTooltip = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-      setTimeoutId(null)
-    }
-    setIsVisible(false)
-  }
-
-  const positionClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2'
-  }
-
+export const FormField: React.FC<FormFieldProps> = ({ children, className }) => {
   return (
-    <div
-      className={cn('relative inline-block', className)}
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
+    <motion.div
+      className={cn('space-y-2', className)}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
       {children}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            className={cn(
-              'absolute z-50 px-3 py-2 text-sm text-white bg-gray-800 rounded-lg shadow-lg',
-              'border border-gray-700 whitespace-nowrap',
-              positionClasses[position]
-            )}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {content}
-            {/* Arrow */}
-            <div
-              className={cn(
-                'absolute w-2 h-2 bg-gray-800 border-gray-700 rotate-45',
-                position === 'top' && 'top-full left-1/2 -translate-x-1/2 -mt-1 border-r border-b',
-                position === 'bottom' && 'bottom-full left-1/2 -translate-x-1/2 -mb-1 border-l border-t',
-                position === 'left' && 'left-full top-1/2 -translate-y-1/2 -ml-1 border-t border-r',
-                position === 'right' && 'right-full top-1/2 -translate-y-1/2 -mr-1 border-b border-l'
-              )}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
 
-export default EnhancedInput
+export default {
+  EnhancedInput,
+  EnhancedButton,
+  FormField
+}

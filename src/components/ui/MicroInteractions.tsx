@@ -19,7 +19,7 @@ export const RippleEffect: React.FC<RippleEffectProps> = ({
   duration = 600,
   disabled = false
 }) => {
-  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>>([])
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
   const handleClick = (e: React.MouseEvent) => {
@@ -202,16 +202,183 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
       disabled={disabled}
       animate={{
         ...getAnimation(),
-        color: isActive ? activeColor : inactiveColor
+        scale: isPressed ? 0.95 : (getAnimation().scale || 1)
       }}
-      whileHover={!disabled ? { scale: 1.05 } : {}}
-      whileTap={!disabled ? { scale: 0.95 } : {}}
-      transition={{ duration: 0.2 }}
+      whileHover={{ scale: disabled ? 1 : 1.05 }}
+      whileTap={{ scale: disabled ? 1 : 0.95 }}
     >
-      <div className={sizeClasses[size]}>
+      <motion.div
+        className={cn(sizeClasses[size])}
+        animate={{
+          color: isActive ? activeColor : inactiveColor
+        }}
+        transition={{ duration: 0.2 }}
+      >
         {icon}
-      </div>
+      </motion.div>
     </motion.button>
+  )
+}
+
+// 进度条动画组件
+interface AnimatedProgressProps {
+  value: number
+  max?: number
+  className?: string
+  barClassName?: string
+  showPercentage?: boolean
+  color?: string
+  backgroundColor?: string
+  height?: 'sm' | 'md' | 'lg'
+  animated?: boolean
+  striped?: boolean
+}
+
+export const AnimatedProgress: React.FC<AnimatedProgressProps> = ({
+  value,
+  max = 100,
+  className,
+  barClassName,
+  showPercentage = false,
+  color = '#00f5ff',
+  backgroundColor = '#374151',
+  height = 'md',
+  animated = true,
+  striped = false
+}) => {
+  const percentage = Math.min((value / max) * 100, 100)
+  
+  const heightClasses = {
+    sm: 'h-2',
+    md: 'h-4',
+    lg: 'h-6'
+  }
+
+  return (
+    <div className={cn('relative w-full', className)}>
+      <div
+        className={cn(
+          'w-full rounded-full overflow-hidden',
+          heightClasses[height]
+        )}
+        style={{ backgroundColor }}
+      >
+        <motion.div
+          className={cn(
+            'h-full rounded-full relative',
+            striped && 'bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:20px_100%]',
+            animated && striped && 'animate-pulse',
+            barClassName
+          )}
+          style={{ backgroundColor: color }}
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+        >
+          {striped && (
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              animate={{ x: ['0%', '100%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            />
+          )}
+        </motion.div>
+      </div>
+      
+      {showPercentage && (
+        <motion.div
+          className="absolute right-0 top-1/2 -translate-y-1/2 text-sm font-medium text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          {Math.round(percentage)}%
+        </motion.div>
+      )}
+    </div>
+  )
+}
+
+// 悬浮提示组件
+interface FloatingTooltipProps {
+  children: React.ReactNode
+  content: string
+  position?: 'top' | 'bottom' | 'left' | 'right'
+  delay?: number
+  className?: string
+}
+
+export const FloatingTooltip: React.FC<FloatingTooltipProps> = ({
+  children,
+  content,
+  position = 'top',
+  delay = 500,
+  className
+}) => {
+  const [isVisible, setIsVisible] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout>()
+
+  const handleMouseEnter = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(true)
+    }, delay)
+  }
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    setIsVisible(false)
+  }
+
+  const getPositionClasses = () => {
+    switch (position) {
+      case 'top':
+        return 'bottom-full left-1/2 -translate-x-1/2 mb-2'
+      case 'bottom':
+        return 'top-full left-1/2 -translate-x-1/2 mt-2'
+      case 'left':
+        return 'right-full top-1/2 -translate-y-1/2 mr-2'
+      case 'right':
+        return 'left-full top-1/2 -translate-y-1/2 ml-2'
+      default:
+        return 'bottom-full left-1/2 -translate-x-1/2 mb-2'
+    }
+  }
+
+  return (
+    <div
+      className={cn('relative inline-block', className)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            className={cn(
+              'absolute z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg whitespace-nowrap',
+              getPositionClasses()
+            )}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+          >
+            {content}
+            <div
+              className={cn(
+                'absolute w-2 h-2 bg-gray-900 rotate-45',
+                position === 'top' && 'top-full left-1/2 -translate-x-1/2 -mt-1',
+                position === 'bottom' && 'bottom-full left-1/2 -translate-x-1/2 -mb-1',
+                position === 'left' && 'left-full top-1/2 -translate-y-1/2 -ml-1',
+                position === 'right' && 'right-full top-1/2 -translate-y-1/2 -mr-1'
+              )}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -234,13 +401,13 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
   const ref = useRef<HTMLButtonElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const rotateX = useTransform(y, [-100, 100], [30, -30])
-  const rotateY = useTransform(x, [-100, 100], [-30, 30])
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (disabled || !ref.current) return
+    if (disabled) return
+    
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
 
-    const rect = ref.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
     const deltaX = (e.clientX - centerX) * strength
@@ -259,254 +426,81 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
     <motion.button
       ref={ref}
       className={cn(
-        'relative transform-gpu transition-colors duration-200',
+        'relative transition-colors duration-200',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
-      style={{
-        x,
-        y,
-        rotateX,
-        rotateY,
-        transformStyle: 'preserve-3d'
-      }}
+      style={{ x, y }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       disabled={disabled}
-      whileHover={!disabled ? { scale: 1.05 } : {}}
-      whileTap={!disabled ? { scale: 0.95 } : {}}
+      whileHover={{ scale: disabled ? 1 : 1.05 }}
+      whileTap={{ scale: disabled ? 1 : 0.95 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
       {children}
     </motion.button>
   )
 }
 
-// 进度指示器组件
-interface ProgressIndicatorProps {
-  progress: number
-  className?: string
-  color?: string
-  backgroundColor?: string
-  showPercentage?: boolean
-  animated?: boolean
-  size?: 'sm' | 'md' | 'lg'
-}
+// 预设的交互式图标按钮
+export const LikeButton: React.FC<{ isLiked: boolean; onToggle: () => void; count?: number }> = ({
+  isLiked,
+  onToggle,
+  count
+}) => (
+  <RippleEffect className="inline-flex items-center space-x-2 p-2 rounded-lg">
+    <AnimatedIcon
+      icon={<Heart className={isLiked ? 'fill-current' : ''} />}
+      isActive={isLiked}
+      onClick={onToggle}
+      activeColor="#ef4444"
+      animation="bounce"
+    />
+    {count !== undefined && (
+      <CounterAnimation value={count} className="text-sm text-gray-400" />
+    )}
+  </RippleEffect>
+)
 
-export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
-  progress,
-  className,
-  color = '#00f5ff',
-  backgroundColor = '#374151',
-  showPercentage = false,
-  animated = true,
-  size = 'md'
+export const StarRating: React.FC<{ rating: number; onRate?: (rating: number) => void; readonly?: boolean }> = ({
+  rating,
+  onRate,
+  readonly = false
 }) => {
-  const sizeClasses = {
-    sm: 'h-2',
-    md: 'h-3',
-    lg: 'h-4'
-  }
-
-  const clampedProgress = Math.max(0, Math.min(100, progress))
-
+  const [hoverRating, setHoverRating] = useState(0)
+  
   return (
-    <div className={cn('relative w-full', className)}>
-      <div
-        className={cn(
-          'w-full rounded-full overflow-hidden',
-          sizeClasses[size]
-        )}
-        style={{ backgroundColor }}
-      >
-        <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
-          initial={{ width: 0 }}
-          animate={{ width: `${clampedProgress}%` }}
-          transition={animated ? { duration: 0.5, ease: 'easeOut' } : { duration: 0 }}
-        />
-      </div>
-      {showPercentage && (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center text-xs font-medium text-white"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+    <div className="flex items-center space-x-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <div
+          key={star}
+          onMouseEnter={() => !readonly && setHoverRating(star)}
+          onMouseLeave={() => !readonly && setHoverRating(0)}
         >
-          {Math.round(clampedProgress)}%
-        </motion.div>
-      )}
+          <AnimatedIcon
+            icon={<Star className={(star <= (hoverRating || rating)) ? 'fill-current' : ''} />}
+            isActive={star <= (hoverRating || rating)}
+            onClick={() => !readonly && onRate?.(star)}
+            activeColor="#fbbf24"
+            animation="scale"
+            disabled={readonly}
+            className={!readonly ? 'hover:scale-110' : ''}
+          />
+        </div>
+      ))}
     </div>
   )
-}
-
-// 浮动提示组件
-interface FloatingTooltipProps {
-  children: React.ReactNode
-  content: string
-  position?: 'top' | 'bottom' | 'left' | 'right'
-  delay?: number
-  className?: string
-}
-
-export const FloatingTooltip: React.FC<FloatingTooltipProps> = ({
-  children,
-  content,
-  position = 'top',
-  delay = 500,
-  className
-}) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
-
-  const showTooltip = () => {
-    const id = setTimeout(() => setIsVisible(true), delay)
-    setTimeoutId(id)
-  }
-
-  const hideTooltip = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-      setTimeoutId(null)
-    }
-    setIsVisible(false)
-  }
-
-  const positionClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2'
-  }
-
-  return (
-    <div
-      className={cn('relative inline-block', className)}
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-    >
-      {children}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            className={cn(
-              'absolute z-50 px-3 py-2 text-sm text-white bg-gray-800 rounded-lg shadow-lg',
-              'border border-gray-700 whitespace-nowrap',
-              positionClasses[position]
-            )}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {content}
-            {/* Arrow */}
-            <div
-              className={cn(
-                'absolute w-2 h-2 bg-gray-800 border-gray-700 rotate-45',
-                position === 'top' && 'top-full left-1/2 -translate-x-1/2 -mt-1 border-r border-b',
-                position === 'bottom' && 'bottom-full left-1/2 -translate-x-1/2 -mb-1 border-l border-t',
-                position === 'left' && 'left-full top-1/2 -translate-y-1/2 -ml-1 border-t border-r',
-                position === 'right' && 'right-full top-1/2 -translate-y-1/2 -mr-1 border-b border-l'
-              )}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
-// 交互式卡片组件
-interface InteractiveCardProps {
-  children: React.ReactNode
-  className?: string
-  hoverEffect?: 'lift' | 'glow' | 'tilt' | 'scale'
-  clickEffect?: 'ripple' | 'bounce' | 'press'
-  disabled?: boolean
-  onClick?: () => void
-}
-
-export const InteractiveCard: React.FC<InteractiveCardProps> = ({
-  children,
-  className,
-  hoverEffect = 'lift',
-  clickEffect = 'ripple',
-  disabled = false,
-  onClick
-}) => {
-  const [isPressed, setIsPressed] = useState(false)
-  const controls = useAnimation()
-
-  const getHoverAnimation = () => {
-    switch (hoverEffect) {
-      case 'lift':
-        return { y: -8, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' }
-      case 'glow':
-        return { boxShadow: '0 0 30px rgba(0, 245, 255, 0.3)' }
-      case 'tilt':
-        return { rotateX: 5, rotateY: 5 }
-      case 'scale':
-        return { scale: 1.05 }
-      default:
-        return {}
-    }
-  }
-
-  const getClickAnimation = () => {
-    switch (clickEffect) {
-      case 'bounce':
-        return { scale: [1, 0.95, 1.02, 1] }
-      case 'press':
-        return { scale: 0.98 }
-      default:
-        return {}
-    }
-  }
-
-  const handleClick = () => {
-    if (disabled) return
-    setIsPressed(true)
-    controls.start(getClickAnimation())
-    onClick?.()
-    setTimeout(() => setIsPressed(false), 200)
-  }
-
-  const CardContent = () => (
-    <motion.div
-      className={cn(
-        'relative cursor-pointer transform-gpu',
-        disabled && 'opacity-50 cursor-not-allowed',
-        className
-      )}
-      whileHover={!disabled ? getHoverAnimation() : {}}
-      whileTap={!disabled ? { scale: 0.98 } : {}}
-      animate={controls}
-      onClick={handleClick}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-    >
-      {children}
-    </motion.div>
-  )
-
-  if (clickEffect === 'ripple') {
-    return (
-      <RippleEffect disabled={disabled}>
-        <CardContent />
-      </RippleEffect>
-    )
-  }
-
-  return <CardContent />
 }
 
 export default {
   RippleEffect,
   CounterAnimation,
   AnimatedIcon,
-  MagneticButton,
-  ProgressIndicator,
+  AnimatedProgress,
   FloatingTooltip,
-  InteractiveCard
+  MagneticButton,
+  LikeButton,
+  StarRating
 }
