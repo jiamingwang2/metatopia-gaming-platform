@@ -99,25 +99,32 @@ export interface WalletState {
   error: string | null;
 }
 
-// 钱包操作接口
+// 钱包操作
 export interface WalletActions {
-  getBalances: () => Promise<WalletBalance[]>;
-  getAddresses: () => Promise<WalletAddress[]>;
-  getTransactions: (filters?: TransactionFilters) => Promise<Transaction[]>;
+  // 余额相关
+  fetchBalances: () => Promise<void>;
+  refreshBalance: (currency: CryptoCurrency) => Promise<void>;
+  
+  // 地址相关
   generateAddress: (currency: CryptoCurrency, network: string) => Promise<WalletAddress>;
+  getAddresses: (currency?: CryptoCurrency) => Promise<WalletAddress[]>;
+  setDefaultAddress: (addressId: string) => Promise<void>;
+  
+  // 交易相关
   deposit: (request: DepositRequest) => Promise<Transaction>;
   withdraw: (request: WithdrawRequest) => Promise<Transaction>;
-  getTransactionStatus: (txId: string) => Promise<Transaction>;
-  refreshBalances: () => Promise<void>;
+  getTransactions: (filters?: TransactionFilters) => Promise<Transaction[]>;
+  getTransaction: (txId: string) => Promise<Transaction>;
+  
+  // 统计相关
+  getStats: () => Promise<WalletStats>;
+  
+  // 工具方法
+  validateAddress: (address: string, currency: CryptoCurrency) => boolean;
+  estimateFee: (currency: CryptoCurrency, amount: number) => Promise<number>;
 }
 
-// 钱包上下文类型
-export interface WalletContextType {
-  state: WalletState;
-  actions: WalletActions;
-}
-
-// 交易过滤器
+// 交易筛选条件
 export interface TransactionFilters {
   currency?: CryptoCurrency;
   type?: TransactionType;
@@ -128,18 +135,33 @@ export interface TransactionFilters {
   offset?: number;
 }
 
+// API响应类型
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+}
+
+// 分页响应
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 // 钱包配置
 export interface WalletConfig {
   supportedCurrencies: CryptoInfo[];
   networks: Record<CryptoCurrency, string[]>;
   fees: Record<CryptoCurrency, number>;
-  confirmations: Record<CryptoCurrency, number>;
-  apiEndpoints: {
-    balance: string;
-    transactions: string;
-    deposit: string;
-    withdraw: string;
-    addresses: string;
+  limits: {
+    minDeposit: Record<CryptoCurrency, number>;
+    minWithdraw: Record<CryptoCurrency, number>;
+    maxWithdraw: Record<CryptoCurrency, number>;
   };
 }
 
@@ -147,7 +169,13 @@ export interface WalletConfig {
 export interface SecuritySettings {
   twoFactorEnabled: boolean;
   withdrawalWhitelist: string[];
-  dailyWithdrawLimit: Record<CryptoCurrency, number>;
-  sessionTimeout: number;
-  ipWhitelist: string[];
+  dailyWithdrawLimit: number;
+  requireConfirmationForLargeAmounts: boolean;
+  largeAmountThreshold: number;
+}
+
+// 钱包上下文类型
+export interface WalletContextType extends WalletState, WalletActions {
+  config: WalletConfig;
+  security: SecuritySettings;
 }
