@@ -72,87 +72,125 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [internalValue, setInternalValue] = useState(defaultValue || '')
+  const [currentValue, setCurrentValue] = useState(value || defaultValue || '')
   const [validationError, setValidationError] = useState<string | null>(null)
-  const [isValid, setIsValid] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const currentValue = value !== undefined ? value : internalValue
-  const hasValue = currentValue && currentValue.length > 0
-  const hasError = error || validationError
-  const showSuccess = success || (isValid && hasValue && !hasError)
+  // Update internal value when external value changes
+  useEffect(() => {
+    if (value !== undefined) {
+      setCurrentValue(value)
+    }
+  }, [value])
 
-  // Validation logic
-  const validateInput = (inputValue: string) => {
-    if (!validation || !showValidation) return
-
-    let errorMessage: string | null = null
+  // Validation function
+  const validateInput = (inputValue: string): string | null => {
+    if (!validation) return null
 
     if (validation.required && !inputValue.trim()) {
-      errorMessage = '此字段为必填项'
-    } else if (validation.minLength && inputValue.length < validation.minLength) {
-      errorMessage = `最少需要 ${validation.minLength} 个字符`
-    } else if (validation.maxLength && inputValue.length > validation.maxLength) {
-      errorMessage = `最多允许 ${validation.maxLength} 个字符`
-    } else if (validation.pattern && !validation.pattern.test(inputValue)) {
-      errorMessage = '格式不正确'
-    } else if (validation.custom) {
-      errorMessage = validation.custom(inputValue)
+      return '此字段为必填项'
     }
 
-    setValidationError(errorMessage)
-    setIsValid(!errorMessage && inputValue.length > 0)
+    if (validation.minLength && inputValue.length < validation.minLength) {
+      return `最少需要 ${validation.minLength} 个字符`
+    }
+
+    if (validation.maxLength && inputValue.length > validation.maxLength) {
+      return `最多允许 ${validation.maxLength} 个字符`
+    }
+
+    if (validation.pattern && !validation.pattern.test(inputValue)) {
+      return '输入格式不正确'
+    }
+
+    if (validation.custom) {
+      return validation.custom(inputValue)
+    }
+
+    return null
   }
 
-  useEffect(() => {
-    if (showValidation) {
-      validateInput(currentValue)
-    }
-  }, [currentValue, validation, showValidation])
-
+  // Handle focus
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(true)
     onFocus?.(e)
   }
 
+  // Handle blur
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(false)
+    if (showValidation) {
+      const error = validateInput(currentValue)
+      setValidationError(error)
+    }
     onBlur?.(e)
   }
 
+  // Handle change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
-    if (value === undefined) {
-      setInternalValue(newValue)
+    setCurrentValue(newValue)
+    
+    // Clear validation error on change if input becomes valid
+    if (validationError && showValidation) {
+      const error = validateInput(newValue)
+      if (!error) {
+        setValidationError(null)
+      }
     }
+    
     onChange?.(e)
   }
 
+  // Determine validation state
+  const hasError = error || validationError
+  const isValid = !hasError && currentValue.length > 0 && showValidation
+  const showSuccess = success || isValid
+  const hasValue = currentValue.length > 0
+
+  // Size classes
   const sizeClasses = {
-    sm: 'h-10 text-sm',
-    md: 'h-12 text-base',
-    lg: 'h-14 text-lg'
+    sm: 'text-sm py-2',
+    md: 'text-base py-3',
+    lg: 'text-lg py-4'
   }
 
+  // Variant classes
   const variantClasses = {
-    default: 'bg-primary-800/50 border border-primary-700 rounded-lg',
-    filled: 'bg-primary-800 border-0 rounded-lg',
-    outlined: 'bg-transparent border-2 border-primary-700 rounded-lg',
-    underlined: 'bg-transparent border-0 border-b-2 border-primary-700 rounded-none'
+    default: 'bg-gray-800/50 border border-gray-700 rounded-lg backdrop-blur-sm',
+    filled: 'bg-gray-800 border-0 rounded-lg',
+    outlined: 'bg-transparent border-2 border-gray-600 rounded-lg',
+    underlined: 'bg-transparent border-0 border-b-2 border-gray-600 rounded-none'
   }
 
+  // Status color function
   const getStatusColor = () => {
-    if (hasError) return 'border-red-500 focus:border-red-500'
-    if (showSuccess) return 'border-green-500 focus:border-green-500'
-    if (isFocused) return 'border-neon-500 focus:border-neon-500'
-    return 'focus:border-neon-500'
+    if (hasError) {
+      return 'border-red-500 focus:border-red-400'
+    }
+    if (showSuccess) {
+      return 'border-green-500 focus:border-green-400'
+    }
+    if (isFocused) {
+      return 'border-neon-500 focus:border-neon-400'
+    }
+    return 'hover:border-gray-600 focus:border-neon-500'
   }
 
+  // Glow effect function
   const getGlowEffect = () => {
-    if (!glowEffect || disabled) return ''
-    if (hasError) return 'focus:shadow-lg focus:shadow-red-500/20'
-    if (showSuccess) return 'focus:shadow-lg focus:shadow-green-500/20'
-    return 'focus:shadow-lg focus:shadow-neon-500/20'
+    if (!glowEffect) return ''
+    
+    if (hasError) {
+      return 'shadow-lg shadow-red-500/20'
+    }
+    if (showSuccess) {
+      return 'shadow-lg shadow-green-500/20'
+    }
+    if (isFocused) {
+      return 'shadow-lg shadow-neon-500/30'
+    }
+    return ''
   }
 
   return (
@@ -160,19 +198,20 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
       {/* Label */}
       {label && (
         <motion.label
-          initial={false}
+          htmlFor={props.id}
+          className={cn(
+            'absolute left-4 transition-all duration-200 pointer-events-none',
+            'text-gray-400',
+            isFocused || hasValue
+              ? 'top-2 text-xs transform -translate-y-1'
+              : 'top-1/2 text-base transform -translate-y-1/2'
+          )}
           animate={{
+            y: isFocused || hasValue ? -8 : 0,
             scale: isFocused || hasValue ? 0.85 : 1,
-            y: isFocused || hasValue ? -24 : 0,
-            color: hasError ? '#ef4444' : showSuccess ? '#10b981' : isFocused ? '#00f5ff' : '#9ca3af'
+            color: isFocused ? '#00f5ff' : hasError ? '#ef4444' : '#9ca3af'
           }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className={cn(
-            'absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none font-medium z-10',
-            'origin-left transition-colors duration-200',
-            variant === 'underlined' && 'left-0'
-          )}
-          htmlFor={props.id || undefined}
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -184,12 +223,11 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
         {/* Left Icon */}
         {icon && (
           <motion.div
-            initial={false}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
             animate={{
-              color: hasError ? '#ef4444' : showSuccess ? '#10b981' : isFocused ? '#00f5ff' : '#9ca3af'
+              color: isFocused ? '#00f5ff' : hasError ? '#ef4444' : '#9ca3af'
             }}
             transition={{ duration: 0.2 }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
           >
             {icon}
           </motion.div>
@@ -203,22 +241,22 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholder={placeholder}
-          disabled={disabled}
+          disabled={disabled || loading}
           required={required}
           autoComplete={autoComplete}
           maxLength={maxLength}
           minLength={minLength}
           pattern={pattern}
+          placeholder={isFocused || !label ? placeholder : ''}
           className={cn(
-            'w-full px-4 py-3 text-white placeholder-gray-400',
-            'transition-all duration-200 outline-none',
+            'w-full px-4 py-3 text-white placeholder-gray-400 transition-all duration-200',
+            'focus:outline-none focus:ring-0',
             sizeClasses[size],
             variantClasses[variant],
             getStatusColor(),
             getGlowEffect(),
             icon && 'pl-12',
-            (rightIcon || type === 'password') && 'pr-12',
+            (rightIcon || type === 'password' || loading || showSuccess || hasError) && 'pr-12',
             disabled && 'opacity-50 cursor-not-allowed',
             inputClassName
           )}
@@ -226,61 +264,73 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
           animate={animateOnFocus ? {
             scale: isFocused ? 1.02 : 1
           } : {}}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
           {...props}
         />
 
-        {/* Right Icon / Password Toggle */}
+        {/* Right Icons */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+          {/* Loading Spinner */}
           {loading && (
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              className="w-5 h-5 border-2 border-neon-500 border-t-transparent rounded-full"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="w-5 h-5 border-2 border-neon-500 border-t-transparent rounded-full animate-spin"
             />
           )}
-          
-          {!loading && showSuccess && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className="text-green-500"
-            >
-              <Check className="w-5 h-5" />
-            </motion.div>
+
+          {/* Validation Icons */}
+          {!loading && showValidation && (
+            <AnimatePresence mode="wait">
+              {hasError && (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="w-5 h-5 text-red-500" />
+                </motion.div>
+              )}
+              {showSuccess && (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Check className="w-5 h-5 text-green-500" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           )}
-          
-          {!loading && hasError && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className="text-red-500"
-            >
-              <AlertCircle className="w-5 h-5" />
-            </motion.div>
-          )}
-          
-          {type === 'password' && (
+
+          {/* Password Toggle */}
+          {type === 'password' && !loading && (
             <motion.button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="text-gray-400 hover:text-white transition-colors duration-200"
               whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </motion.button>
           )}
-          
-          {rightIcon && !loading && !showSuccess && !hasError && (
+
+          {/* Custom Right Icon */}
+          {rightIcon && !loading && (
             <motion.div
-              initial={false}
-              animate={{
-                color: isFocused ? '#00f5ff' : '#9ca3af'
-              }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-gray-400"
             >
               {rightIcon}
             </motion.div>
@@ -288,30 +338,27 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
         </div>
       </div>
 
-      {/* Error/Success Message */}
+      {/* Helper Text */}
       <AnimatePresence>
-        {(hasError || showSuccess) && (
+        {(hasError || (showValidation && isValid)) && (
           <motion.div
             initial={{ opacity: 0, y: -10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
             exit={{ opacity: 0, y: -10, height: 0 }}
             transition={{ duration: 0.2 }}
-            className={cn(
-              'mt-2 text-sm font-medium flex items-center space-x-2',
-              hasError ? 'text-red-500' : 'text-green-500'
-            )}
+            className="mt-2 flex items-center space-x-2"
           >
             {hasError ? (
               <>
-                <X className="w-4 h-4" />
-                <span>{hasError}</span>
+                <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <span className="text-sm text-red-500">{hasError}</span>
               </>
-            ) : (
+            ) : showValidation && isValid ? (
               <>
-                <Check className="w-4 h-4" />
-                <span>输入有效</span>
+                <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <span className="text-sm text-green-500">输入有效</span>
               </>
-            )}
+            ) : null}
           </motion.div>
         )}
       </AnimatePresence>
@@ -319,12 +366,17 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
       {/* Character Count */}
       {maxLength && showValidation && (
         <motion.div
-          className="mt-1 text-xs text-gray-500 text-right"
           initial={{ opacity: 0 }}
-          animate={{ opacity: isFocused ? 1 : 0.7 }}
-          transition={{ duration: 0.2 }}
+          animate={{ opacity: isFocused || hasValue ? 1 : 0 }}
+          className="mt-1 text-right"
         >
-          {currentValue.length}/{maxLength}
+          <span className={cn(
+            'text-xs',
+            currentValue.length > maxLength * 0.8 ? 'text-orange-400' : 'text-gray-500',
+            currentValue.length >= maxLength ? 'text-red-500' : ''
+          )}>
+            {currentValue.length}/{maxLength}
+          </span>
         </motion.div>
       )}
     </div>
