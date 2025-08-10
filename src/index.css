@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-900: #0a0e27;
+  --primary-800: #1e1b6b;
+  --primary-700: #2d2a9f;
+  --neon-500: #22c55e;
+  --esports-500: #f97316;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: linear-gradient(135deg, #050712 0%, #0a0e27 100%);
+  color: #ffffff;
+  line-height: 1.6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e27;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #22c55e, #f97316);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #f97316, #22c55e);
+}
+
+/* 全局组件样式 */
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-neon-500 to-esports-500 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-neon-500/25 hover:scale-105 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-primary-800 text-white font-semibold py-3 px-6 rounded-lg border border-neon-500/30 transition-all duration-300 hover:bg-primary-700 hover:border-neon-500 hover:shadow-lg hover:shadow-neon-500/25;
+  }
+  
+  .card-gaming {
+    @apply bg-gradient-to-br from-primary-900/80 to-primary-800/60 backdrop-blur-sm border border-neon-500/20 rounded-xl p-6 transition-all duration-300 hover:border-neon-500/40 hover:shadow-lg hover:shadow-neon-500/10;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-neon-500 to-esports-500 bg-clip-text text-transparent;
+  }
+  
+  .glow-effect {
+    @apply shadow-lg shadow-neon-500/25;
+  }
+  
+  .gaming-border {
+    @apply border border-neon-500/30 hover:border-neon-500/60 transition-colors duration-300;
+  }
+}
+
+/* 动画效果 */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 响应式字体大小 */
+.text-responsive-xl {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.text-responsive-lg {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+.text-responsive-md {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
