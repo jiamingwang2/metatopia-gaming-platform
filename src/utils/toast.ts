@@ -1,70 +1,90 @@
-import { toast } from 'sonner'
+import { toast } from 'sonner';
+
+interface ToastOptions {
+  duration?: number;
+  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  dismissible?: boolean;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
 
 export const showToast = {
-  success: (message: string) => {
-    toast.success(message, {
+  success: (message: string, options?: ToastOptions) => {
+    return toast.success(message, {
+      duration: options?.duration || 3000,
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action,
       style: {
-        background: 'rgb(34, 197, 94)', // bg-green-500
-        border: '1px solid rgb(34, 197, 94)',
+        background: '#10b981',
         color: 'white',
-      },
-    })
+        border: 'none'
+      }
+    });
   },
-  
-  error: (message: string) => {
-    toast.error(message, {
+
+  error: (message: string, options?: ToastOptions) => {
+    return toast.error(message, {
+      duration: options?.duration || 5000,
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action,
       style: {
-        background: 'rgb(239, 68, 68)', // bg-red-500
-        border: '1px solid rgb(239, 68, 68)',
+        background: '#ef4444',
         color: 'white',
-      },
-    })
+        border: 'none'
+      }
+    });
   },
-  
-  info: (message: string) => {
-    toast.info(message, {
+
+  info: (message: string, options?: ToastOptions) => {
+    return toast.info(message, {
+      duration: options?.duration || 3000,
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action,
       style: {
-        background: 'rgb(59, 130, 246)', // bg-blue-500
-        border: '1px solid rgb(59, 130, 246)',
+        background: '#3b82f6',
         color: 'white',
-      },
-    })
+        border: 'none'
+      }
+    });
   },
-  
-  warning: (message: string) => {
-    toast.warning(message, {
+
+  warning: (message: string, options?: ToastOptions) => {
+    return toast.warning(message, {
+      duration: options?.duration || 4000,
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action,
       style: {
-        background: 'rgb(245, 158, 11)', // bg-yellow-500
-        border: '1px solid rgb(245, 158, 11)',
+        background: '#f59e0b',
         color: 'white',
-      },
-    })
+        border: 'none'
+      }
+    });
   },
-  
-  loading: (message: string) => {
+
+  loading: (message: string, options?: Omit<ToastOptions, 'duration'>) => {
     return toast.loading(message, {
-      style: {
-        background: 'rgb(107, 114, 128)', // bg-gray-500
-        border: '1px solid rgb(107, 114, 128)',
-        color: 'white',
-      },
-    })
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action
+    });
   },
-  
+
   promise: <T>(promise: Promise<T>, messages: {
-    loading: string
-    success: string
-    error: string
-  }) => {
-    return toast.promise(promise, {
-      loading: messages.loading,
-      success: messages.success,
-      error: messages.error,
-      style: {
-        background: 'rgb(17, 24, 39)',
-        border: '1px solid rgb(55, 65, 81)',
-        color: 'white',
-      },
-    })
+    loading: string;
+    success: string | ((data: T) => string);
+    error: string | ((error: any) => string);
+  }, options?: ToastOptions) => {
+    return toast.promise(promise, messages, {
+      duration: options?.duration,
+      position: options?.position || 'top-right',
+      dismissible: options?.dismissible !== false,
+      action: options?.action
+    });
   }
-}
+};
