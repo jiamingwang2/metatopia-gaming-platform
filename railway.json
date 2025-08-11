@@ -1,0 +1,29 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "cd backend && npm install && npm run build"
+  },
+  "deploy": {
+    "startCommand": "cd backend && npm start",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 300,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "NODE_ENV": "production",
+        "PORT": "$PORT",
+        "API_VERSION": "v1",
+        "SUPABASE_URL": "https://qisvhblvxuwglqwwuiaz.supabase.co",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpc3ZoYmx2eHV3Z2xxd3d1aWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3NDUyOTksImV4cCI6MjA3MDMyMTI5OX0.kHnOWrLRyuok0RF_7Moj06i9h1KoeiiC2Zh8wVN9aLE",
+        "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpc3ZoYmx2eHV3Z2xxd3d1aWF6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDc0NTI5OSwiZXhwIjoyMDcwMzIxMjk5fQ.2JvZj-mCYNgtqe5x2n5QQ8LEIGZFWqn1LgasYVBxHwc",
+        "JWT_SECRET": "metatopia_jwt_secret_2024_production_key_v1",
+        "CORS_ORIGIN": "https://metatopia-platform.vercel.app",
+        "CORS_CREDENTIALS": "true"
+      }
+    }
+  }
+}
