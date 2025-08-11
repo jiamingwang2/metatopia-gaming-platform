@@ -98,66 +98,103 @@ const Login: React.FC = () => {
     }
 
     setIsSubmitting(true);
-
+    
     try {
       const response = await login(formData);
       
       if (response.success) {
-        toast.success('登录成功！');
-        navigate(from, { replace: true });
+        toast.success('登录成功！', {
+          description: '欢迎回到 METATOPIA',
+        });
+        // 导航将由 useEffect 处理
       } else {
-        toast.error(response.error || '登录失败，请检查您的凭据');
+        toast.error('登录失败', {
+          description: response.error || '请检查您的邮箱和密码',
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      
+      // 获取用户友好的错误信息
       const errorMessage = getErrorMessage(error);
-      toast.error(errorMessage);
+      
+      // 进行网络诊断（仅在调试模式下）
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          const diagnosis = await getNetworkDiagnostics();
+          console.log('网络诊断结果:', diagnosis);
+        } catch (diagError) {
+          console.error('网络诊断失败:', diagError);
+        }
+      }
+      
+      toast.error('登录失败', {
+        description: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 如果正在加载认证状态，显示加载界面
-  if (authState.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-neon-500"></div>
-      </div>
-    );
-  }
+  // 快速登录（演示用）
+  const handleQuickLogin = () => {
+    setFormData({
+      email: 'test@metatopia.com',
+      password: 'password123',
+      rememberMe: true,
+    });
+    setErrors({});
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-gaming font-bold text-white">
-            欢迎回到 <span className="text-gradient">METATOPIA</span>
-          </h2>
-          <p className="mt-2 text-sm text-gray-400">
-            登录您的账户，继续您的GameFi之旅
-          </p>
-          
-          {/* Network Status Indicator */}
-          <div className="mt-4 flex items-center justify-center space-x-2">
-            {isOnline ? (
-              <>
-                <Wifi className="w-4 h-4 text-green-500" />
-                <span className="text-xs text-green-500">网络连接正常</span>
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-4 h-4 text-red-500" />
-                <span className="text-xs text-red-500">网络连接异常</span>
-              </>
-            )}
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+      {/* 背景装饰 */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+      </div>
 
-        {/* Login Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Email Field */}
+      <div className="relative w-full max-w-md">
+        {/* 登录卡片 */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8">
+          {/* 头部 */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <LogIn className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">欢迎回来</h1>
+            <p className="text-gray-300">登录您的 METATOPIA 账户</p>
+            
+            {/* 网络状态指示器 */}
+            <div className={`mt-4 flex items-center justify-center gap-2 text-sm ${
+              isOnline ? 'text-green-400' : 'text-red-400'
+            }`}>
+              {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+              <span>{isOnline ? '网络连接正常' : '网络连接异常'}</span>
+            </div>
+          </div>
+
+          {/* 快速登录提示 */}
+          <div className="mb-6 p-4 bg-blue-500/20 border border-blue-400/30 rounded-lg">
+            <div className="flex items-center gap-2 text-blue-300 text-sm mb-2">
+              <CheckCircle className="w-4 h-4" />
+              <span>演示账户</span>
+            </div>
+            <p className="text-xs text-blue-200 mb-2">邮箱: test@metatopia.com</p>
+            <p className="text-xs text-blue-200 mb-3">密码: password123</p>
+            <button
+              type="button"
+              onClick={handleQuickLogin}
+              className="text-xs text-blue-300 hover:text-blue-200 underline"
+            >
+              点击快速填充
+            </button>
+          </div>
+
+          {/* 登录表单 */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* 邮箱输入 */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                 邮箱地址
@@ -170,25 +207,26 @@ const Login: React.FC = () => {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
-                  required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-primary-800/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-neon-500 focus:border-transparent transition-all duration-200 ${
-                    errors.email ? 'border-red-500' : 'border-primary-600'
+                  className={`w-full pl-10 pr-4 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${
+                    errors.email
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-gray-600 focus:ring-purple-400 focus:border-purple-400'
                   }`}
-                  placeholder="请输入您的邮箱地址"
+                  placeholder="请输入您的邮箱"
+                  autoComplete="email"
                 />
               </div>
               {errors.email && (
-                <div className="mt-1 flex items-center space-x-1 text-red-400 text-sm">
+                <div className="mt-2 flex items-center gap-1 text-red-400 text-sm">
                   <AlertCircle className="w-4 h-4" />
                   <span>{errors.email}</span>
                 </div>
               )}
             </div>
 
-            {/* Password Field */}
+            {/* 密码输入 */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                 密码
@@ -201,96 +239,90 @@ const Login: React.FC = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg bg-primary-800/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-neon-500 focus:border-transparent transition-all duration-200 ${
-                    errors.password ? 'border-red-500' : 'border-primary-600'
+                  className={`w-full pl-10 pr-12 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${
+                    errors.password
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-gray-600 focus:ring-purple-400 focus:border-purple-400'
                   }`}
                   placeholder="请输入您的密码"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-300" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-300" />
-                  )}
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
               {errors.password && (
-                <div className="mt-1 flex items-center space-x-1 text-red-400 text-sm">
+                <div className="mt-2 flex items-center gap-1 text-red-400 text-sm">
                   <AlertCircle className="w-4 h-4" />
                   <span>{errors.password}</span>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Remember Me & Forgot Password */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={handleInputChange}
-                className="h-4 w-4 text-neon-500 focus:ring-neon-500 border-primary-600 rounded bg-primary-800"
-              />
-              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
-                记住我
+            {/* 记住我和忘记密码 */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-purple-600 bg-white/10 border-gray-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
+                <span className="ml-2 text-sm text-gray-300">记住我</span>
               </label>
-            </div>
-
-            <div className="text-sm">
               <Link
                 to="/forgot-password"
-                className="font-medium text-neon-500 hover:text-neon-400 transition-colors duration-200"
+                className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
               >
                 忘记密码？
               </Link>
             </div>
-          </div>
 
-          {/* Submit Button */}
-          <div>
+            {/* 登录按钮 */}
             <button
               type="submit"
-              disabled={isSubmitting || !isOnline}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-neon-500 to-esports-500 hover:from-neon-600 hover:to-esports-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neon-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              disabled={isSubmitting || authState.isLoading}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              {isSubmitting || authState.isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   <span>登录中...</span>
-                </div>
+                </>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <LogIn className="w-4 h-4" />
+                <>
+                  <LogIn className="w-5 h-5" />
                   <span>登录</span>
-                </div>
+                </>
               )}
             </button>
-          </div>
+          </form>
 
-          {/* Register Link */}
-          <div className="text-center">
-            <p className="text-sm text-gray-400">
+          {/* 注册链接 */}
+          <div className="mt-8 text-center">
+            <p className="text-gray-300">
               还没有账户？{' '}
               <Link
                 to="/register"
-                className="font-medium text-neon-500 hover:text-neon-400 transition-colors duration-200"
+                className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
               >
                 立即注册
               </Link>
             </p>
           </div>
-        </form>
+        </div>
+
+        {/* 底部信息 */}
+        <div className="mt-8 text-center text-gray-400 text-sm">
+          <p>&copy; 2024 METATOPIA. 保留所有权利.</p>
+        </div>
       </div>
     </div>
   );
