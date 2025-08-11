@@ -42,94 +42,107 @@ const GameDetail: React.FC = () => {
   const [selectedScreenshot, setSelectedScreenshot] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
-  const [activeTab, setActiveTab] = useState<'overview' | 'requirements' | 'reviews'>('overview')
+  const [activeTab, setActiveTab] = useState('overview')
 
   // Mock game data
-  const mockGames: Game[] = [
-    {
-      id: 1,
-      title: 'Cyber Warriors',
-      description: '在未来世界中体验激烈的机甲战斗，驾驶高科技战甲征服战场。',
-      detailedDescription: `在2087年的赛博朋克世界中，人类与AI的战争已经持续了数十年。作为精英机甲驾驶员，你将驾驶最先进的战斗机甲，在废墟城市中与敌人展开激烈战斗。\n\n游戏采用先进的物理引擎，每一次战斗都充满真实感。你可以自定义你的机甲，选择不同的武器系统、护甲配置和特殊技能。在单人战役中探索深度剧情，或在多人模式中与全球玩家竞技。\n\n准备好迎接最激烈的机甲战斗体验吧！`,
-      category: 'action',
-      genre: ['动作', '射击', '机甲'],
-      rating: 4.8,
-      players: 125000,
-      downloads: '2.5M',
-      price: 'Free',
-      image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop',
-      screenshots: [
-        'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-        'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=450&fit=crop',
-        'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=800&h=450&fit=crop',
-        'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800&h=450&fit=crop'
+  const mockGame: Game = {
+    id: 1,
+    title: 'Cyber Warriors',
+    description: '在未来世界中体验激烈的机甲战斗',
+    category: '动作游戏',
+    genre: ['射击', 'PvP', '科幻'],
+    rating: 4.8,
+    players: 125000,
+    downloads: '2.5M',
+    price: 'Free',
+    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop',
+    screenshots: [
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=450&fit=crop',
+      'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
+      'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop'
+    ],
+    developer: 'Future Games Studio',
+    releaseDate: '2024-01-15',
+    features: [
+      '多人在线对战',
+      '自定义机甲',
+      '战术团队合作',
+      '排位竞技系统',
+      '丰富的武器系统'
+    ],
+    systemRequirements: {
+      minimum: [
+        'Windows 10 64位',
+        'Intel i5-8400 / AMD Ryzen 5 2600',
+        '8 GB RAM',
+        'GTX 1060 / RX 580',
+        '50 GB 可用空间'
       ],
-      developer: 'CyberStudio',
-      releaseDate: '2024-01-15',
-      features: [
-        '高度自定义的机甲系统',
-        '史诗级单人战役',
-        '多人竞技模式',
-        '真实物理引擎',
-        '4K画质支持',
-        '沉浸式音效体验'
-      ],
-      systemRequirements: {
-        minimum: [
-          'Windows 10 64位',
-          'Intel i5-8400 / AMD Ryzen 5 2600',
-          '8 GB RAM',
-          'GTX 1060 / RX 580',
-          '50 GB 可用空间'
-        ],
-        recommended: [
-          'Windows 11 64位',
-          'Intel i7-10700K / AMD Ryzen 7 3700X',
-          '16 GB RAM',
-          'RTX 3070 / RX 6700 XT',
-          '50 GB SSD空间'
-        ]
-      },
-      tags: ['机甲', '未来', '战斗', '多人', '竞技'],
-      isNew: true,
-      isFeatured: true,
-      isPopular: true,
-      achievements: [
-        { name: '新手驾驶员', description: '完成第一场战斗', icon: '🎯' },
-        { name: '机甲大师', description: '获得100场胜利', icon: '🏆' },
-        { name: '改装专家', description: '解锁所有机甲部件', icon: '🔧' },
-        { name: '传奇战士', description: '达到最高等级', icon: '⭐' }
-      ],
-      reviews: [
-        { user: 'GameMaster2024', rating: 5, comment: '画面震撼，操作流畅，是今年最好的机甲游戏！', date: '2024-01-20' },
-        { user: 'CyberFan', rating: 4, comment: '剧情很棒，但希望能有更多的机甲选择。', date: '2024-01-18' },
-        { user: 'MechWarrior', rating: 5, comment: '多人模式非常有趣，和朋友一起玩很爽！', date: '2024-01-16' }
+      recommended: [
+        'Windows 11 64位',
+        'Intel i7-10700K / AMD Ryzen 7 3700X',
+        '16 GB RAM',
+        'RTX 3070 / RX 6700 XT',
+        '50 GB SSD 空间'
       ]
-    }
-  ]
+    },
+    tags: ['多人', '竞技', '机甲', '射击', '科幻'],
+    isNew: true,
+    isFeatured: true,
+    isPopular: true,
+    detailedDescription: 'Cyber Warriors 是一款设定在2087年的未来世界的多人在线战斗游戏。玩家将驾驶高度定制化的机甲，在各种未来战场上与其他玩家展开激烈对战。游戏采用先进的物理引擎，提供真实的机甲操控体验和爆炸效果。',
+    gameplayVideo: 'https://example.com/gameplay-video.mp4',
+    achievements: [
+      { name: '新手上路', description: '完成第一场对战', icon: '🎯' },
+      { name: '机甲大师', description: '获得100场胜利', icon: '🏆' },
+      { name: '团队合作', description: '与队友配合获得胜利', icon: '🤝' },
+      { name: '无敌战士', description: '连续获得10场胜利', icon: '⚡' }
+    ],
+    reviews: [
+      {
+        user: '游戏达人',
+        rating: 5,
+        comment: '画面精美，操作流畅，机甲设计很棒！',
+        date: '2024-01-20'
+      },
+      {
+        user: '科幻迷',
+        rating: 4,
+        comment: '很好的科幻题材游戏，就是有时候匹配时间有点长。',
+        date: '2024-01-18'
+      },
+      {
+        user: '竞技玩家',
+        rating: 5,
+        comment: '排位系统很公平，技能平衡做得不错。',
+        date: '2024-01-16'
+      }
+    ]
+  }
 
   useEffect(() => {
-    const fetchGame = async () => {
-      setLoading(true)
+    const loadGame = async () => {
       try {
+        setLoading(true)
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000))
-        const gameData = mockGames.find(g => g.id === parseInt(id || '0'))
-        if (gameData) {
-          setGame(gameData)
+        
+        if (id === '1') {
+          setGame(mockGame)
         } else {
-          showToast.error('游戏不存在')
+          showToast('游戏不存在', 'error')
           navigate('/game-center')
         }
       } catch (error) {
-        showToast.error('加载游戏信息失败')
+        showToast('加载游戏详情失败', 'error')
         navigate('/game-center')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchGame()
+    loadGame()
   }, [id, navigate])
 
   const handlePlayGame = async () => {
@@ -137,36 +150,45 @@ const GameDetail: React.FC = () => {
     
     setIsPlaying(true)
     try {
+      // Simulate game launch
       await new Promise(resolve => setTimeout(resolve, 2000))
+      
       if (game.price === 'Free') {
-        showToast.success(`正在启动 ${game.title}...`)
+        showToast('游戏启动中...', 'success')
       } else {
-        showToast.info(`即将跳转到 ${game.title} 购买页面`)
+        showToast('请先购买游戏', 'warning')
       }
     } catch (error) {
-      showToast.error('启动游戏失败，请稍后重试')
+      showToast('启动游戏失败', 'error')
     } finally {
       setIsPlaying(false)
     }
   }
 
   const handleFavorite = () => {
-    if (!game) return
     setIsFavorite(!isFavorite)
-    showToast.success(isFavorite ? `已取消收藏 ${game.title}` : `已收藏 ${game.title}`)
+    showToast(isFavorite ? '已取消收藏' : '已添加到收藏', 'success')
   }
 
   const handleShare = () => {
-    if (!game) return
-    showToast.info(`分享 ${game.title} 到社交媒体`)
+    if (navigator.share) {
+      navigator.share({
+        title: game?.title,
+        text: game?.description,
+        url: window.location.href
+      })
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+      showToast('链接已复制到剪贴板', 'success')
+    }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-primary-950 pt-20 flex items-center justify-center">
+      <div className="min-h-screen bg-primary-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-neon-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">加载游戏信息中...</p>
+          <p className="text-gray-400">加载游戏详情中...</p>
         </div>
       </div>
     )
@@ -174,11 +196,13 @@ const GameDetail: React.FC = () => {
 
   if (!game) {
     return (
-      <div className="min-h-screen bg-primary-950 pt-20 flex items-center justify-center">
+      <div className="min-h-screen bg-primary-900 flex items-center justify-center">
         <div className="text-center">
-          <Gamepad2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h2 className="text-xl font-tech font-bold text-gray-400 mb-2">游戏不存在</h2>
-          <button onClick={() => navigate('/game-center')} className="btn-primary">
+          <p className="text-gray-400 mb-4">游戏不存在</p>
+          <button
+            onClick={() => navigate('/game-center')}
+            className="btn-primary"
+          >
             返回游戏中心
           </button>
         </div>
@@ -187,122 +211,114 @@ const GameDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-primary-950 pt-20">
-      <div className="container mx-auto px-4 lg:px-6 py-8">
+    <div className="min-h-screen bg-primary-900">
+      <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('/game-center')}
-          className="flex items-center space-x-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>返回游戏中心</span>
         </motion.button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Game Media */}
+          {/* Left Column - Media & Details */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Main Screenshot */}
-            <div className="relative rounded-lg overflow-hidden">
-              <img
-                src={game.screenshots[selectedScreenshot]}
-                alt={`${game.title} Screenshot ${selectedScreenshot + 1}`}
-                className="w-full h-96 object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              
-              {/* Play Button Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  onClick={handlePlayGame}
-                  disabled={isPlaying}
-                  className={cn(
-                    "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300",
-                    isPlaying
-                      ? "bg-gray-500/90 cursor-not-allowed"
-                      : "bg-neon-500/90 hover:bg-neon-400/90 hover:scale-110"
-                  )}
-                >
-                  {isPlaying ? (
-                    <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Play className="w-10 h-10 text-white" />
-                  )}
-                </button>
+            {/* Game Media */}
+            <div className="card-gaming">
+              <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
+                <img
+                  src={game.screenshots[selectedScreenshot]}
+                  alt={`${game.title} screenshot ${selectedScreenshot + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                  <button className="w-16 h-16 bg-neon-500 rounded-full flex items-center justify-center hover:bg-neon-400 transition-colors">
+                    <Play className="w-8 h-8 text-white ml-1" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* Screenshot Thumbnails */}
-            <div className="flex space-x-4 overflow-x-auto pb-2">
-              {game.screenshots.map((screenshot, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedScreenshot(index)}
-                  className={cn(
-                    "flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all",
-                    selectedScreenshot === index
-                      ? "border-neon-500 scale-105"
-                      : "border-transparent hover:border-gray-600"
-                  )}
-                >
-                  <img
-                    src={screenshot}
-                    alt={`Screenshot ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
+              
+              {/* Screenshot Thumbnails */}
+              <div className="flex space-x-2 overflow-x-auto pb-2">
+                {game.screenshots.map((screenshot, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedScreenshot(index)}
+                    className={cn(
+                      "flex-shrink-0 w-20 h-12 rounded overflow-hidden border-2 transition-colors",
+                      selectedScreenshot === index ? "border-neon-500" : "border-transparent"
+                    )}
+                  >
+                    <img
+                      src={screenshot}
+                      alt={`Screenshot ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Game Details Tabs */}
             <div className="card-gaming">
-              <div className="flex border-b border-primary-700 mb-6">
+              <div className="flex space-x-1 mb-6 bg-primary-800 rounded-lg p-1">
                 {[
-                  { id: 'overview', label: '游戏概述' },
-                  { id: 'requirements', label: '系统要求' },
-                  { id: 'reviews', label: '用户评价' }
-                ].map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={cn(
-                      "px-6 py-3 font-medium transition-colors relative",
-                      activeTab === tab.id
-                        ? "text-neon-500 border-b-2 border-neon-500"
-                        : "text-gray-400 hover:text-white"
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+                  { id: 'overview', label: '游戏概述', icon: Gamepad2 },
+                  { id: 'requirements', label: '系统要求', icon: Monitor },
+                  { id: 'reviews', label: '用户评价', icon: Star }
+                ].map(tab => {
+                  const Icon = tab.icon
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={cn(
+                        "flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md transition-colors",
+                        activeTab === tab.id
+                          ? "bg-neon-500 text-white"
+                          : "text-gray-400 hover:text-white"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{tab.label}</span>
+                    </button>
+                  )
+                })}
               </div>
 
-              {/* Tab Content */}
-              <div className="space-y-6">
+              <div className="min-h-[300px]">
                 {activeTab === 'overview' && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                   >
+                    {/* Game Description */}
                     <div>
                       <h3 className="text-lg font-tech font-bold text-white mb-3">游戏介绍</h3>
-                      <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+                      <p className="text-gray-300 leading-relaxed">
                         {game.detailedDescription || game.description}
                       </p>
                     </div>
-                    
+
+                    {/* Game Features */}
                     <div>
-                      <h3 className="text-lg font-tech font-bold text-white mb-3">游戏特色</h3>
+                      <h3 className="text-lg font-tech font-bold text-white mb-3 flex items-center space-x-2">
+                        <Shield className="w-5 h-5 text-neon-500" />
+                        <span>游戏特色</span>
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {game.features.map((feature, index) => (
-                          <div key={index} className="flex items-center space-x-2">
+                          <div key={index} className="flex items-center space-x-3 p-3 bg-primary-800 rounded-lg">
                             <div className="w-2 h-2 bg-neon-500 rounded-full" />
                             <span className="text-gray-300">{feature}</span>
                           </div>
@@ -310,10 +326,14 @@ const GameDetail: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Achievements */}
                     {game.achievements && (
                       <div>
-                        <h3 className="text-lg font-tech font-bold text-white mb-3">成就系统</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 className="text-lg font-tech font-bold text-white mb-3 flex items-center space-x-2">
+                          <Trophy className="w-5 h-5 text-neon-500" />
+                          <span>成就系统</span>
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {game.achievements.map((achievement, index) => (
                             <div key={index} className="flex items-center space-x-3 p-3 bg-primary-800 rounded-lg">
                               <span className="text-2xl">{achievement.icon}</span>
