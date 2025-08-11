@@ -77,290 +77,278 @@ const NFTMarket: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedRarity, setSelectedRarity] = useState('all')
-  const [priceRange, setPriceRange] = useState([0, 1000])
-  const [sortBy, setSortBy] = useState('newest')
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000])
+  const [sortBy, setSortBy] = useState('price_low')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
   const [selectedNFT, setSelectedNFT] = useState<number | null>(null)
   const [loadingAction, setLoadingAction] = useState<string | null>(null)
 
-  // Mock NFT data
   const nfts: NFT[] = [
     {
       id: 1,
       name: 'Cyber Warrior #001',
-      description: 'A legendary cyber warrior from the digital realm',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop',
+      description: 'A legendary cyber warrior from the digital realm, equipped with quantum armor and neural implants.',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cyberpunk%20warrior%20NFT%20art%20with%20neon%20armor%20and%20digital%20effects&image_size=square',
       creator: {
         id: 1,
         username: 'CyberArtist',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cyberpunk%20artist%20avatar&image_size=square',
         isVerified: true
       },
       owner: {
         id: 2,
         username: 'NFTCollector',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face'
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=NFT%20collector%20avatar&image_size=square'
       },
       collection: {
         id: 1,
         name: 'Cyber Warriors',
         floorPrice: 2.5
       },
-      price: 15.5,
+      price: 15.8,
       currency: 'ETH',
       rarity: 'Legendary',
       category: 'Gaming',
       attributes: [
-        { trait_type: 'Strength', value: 95, rarity: 5 },
-        { trait_type: 'Speed', value: 88, rarity: 12 },
-        { trait_type: 'Armor', value: 'Quantum', rarity: 2 },
-        { trait_type: 'Weapon', value: 'Plasma Sword', rarity: 8 }
+        { trait_type: 'Armor Type', value: 'Quantum', rarity: 5 },
+        { trait_type: 'Weapon', value: 'Plasma Sword', rarity: 8 },
+        { trait_type: 'Background', value: 'Neon City', rarity: 12 }
       ],
       stats: {
-        views: 12450,
-        likes: 892,
-        sales: 23,
-        volume: 156.8
+        views: 1250,
+        likes: 89,
+        sales: 3,
+        volume: 45.2
       },
       isLiked: false,
       isForSale: true,
       isAuction: false,
       lastSale: {
-        price: 12.3,
+        price: 12.5,
         currency: 'ETH',
-        date: '2024-01-15'
+        date: '2024-01-15T10:30:00Z'
       },
       priceHistory: [
         { price: 8.5, date: '2024-01-01' },
-        { price: 10.2, date: '2024-01-08' },
-        { price: 12.3, date: '2024-01-15' },
-        { price: 15.5, date: '2024-01-22' }
+        { price: 12.5, date: '2024-01-15' },
+        { price: 15.8, date: '2024-01-20' }
       ]
     },
     {
       id: 2,
       name: 'Dragon Essence Crystal',
-      description: 'A mystical crystal containing the essence of ancient dragons',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
+      description: 'A mystical crystal containing the essence of an ancient dragon, pulsing with magical energy.',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=magical%20dragon%20crystal%20NFT%20with%20glowing%20effects&image_size=square',
       creator: {
         id: 3,
         username: 'MysticCreator',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=mystical%20creator%20avatar&image_size=square',
         isVerified: true
       },
       owner: {
         id: 4,
         username: 'DragonLord',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=dragon%20lord%20avatar&image_size=square'
       },
       collection: {
         id: 2,
         name: 'Mystic Artifacts',
         floorPrice: 1.8
       },
-      price: 8.2,
+      price: 8.5,
       currency: 'ETH',
       rarity: 'Epic',
       category: 'Art',
       attributes: [
         { trait_type: 'Element', value: 'Fire', rarity: 15 },
-        { trait_type: 'Power Level', value: 87, rarity: 8 },
-        { trait_type: 'Origin', value: 'Ancient', rarity: 3 },
-        { trait_type: 'Clarity', value: 'Perfect', rarity: 1 }
+        { trait_type: 'Power Level', value: 'Ancient', rarity: 3 },
+        { trait_type: 'Glow', value: 'Crimson', rarity: 20 }
       ],
       stats: {
-        views: 8920,
-        likes: 654,
-        sales: 18,
-        volume: 98.4
+        views: 890,
+        likes: 67,
+        sales: 2,
+        volume: 25.8
       },
       isLiked: true,
       isForSale: true,
       isAuction: true,
-      auctionEndTime: '2024-02-01T15:30:00Z',
+      auctionEndTime: '2024-01-25T18:00:00Z',
       lastSale: {
-        price: 6.8,
+        price: 6.2,
         currency: 'ETH',
-        date: '2024-01-10'
+        date: '2024-01-10T14:20:00Z'
       },
       priceHistory: [
-        { price: 4.2, date: '2024-01-01' },
-        { price: 5.5, date: '2024-01-05' },
-        { price: 6.8, date: '2024-01-10' },
-        { price: 8.2, date: '2024-01-20' }
+        { price: 4.5, date: '2024-01-01' },
+        { price: 6.2, date: '2024-01-10' },
+        { price: 8.5, date: '2024-01-20' }
       ]
     },
     {
       id: 3,
       name: 'Quantum Racer #777',
-      description: 'Ultra-rare quantum racing vehicle with interdimensional capabilities',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+      description: 'A high-speed quantum racing vehicle designed for interdimensional competitions.',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=futuristic%20quantum%20racing%20car%20NFT%20with%20energy%20trails&image_size=square',
+      video: 'https://example.com/quantum-racer-animation',
       creator: {
         id: 5,
-        username: 'QuantumDesigns',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face',
-        isVerified: true
+        username: 'SpeedDesigner',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=speed%20designer%20avatar&image_size=square',
+        isVerified: false
       },
       owner: {
         id: 6,
-        username: 'SpeedDemon',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face'
+        username: 'RacingFan',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=racing%20fan%20avatar&image_size=square'
       },
       collection: {
         id: 3,
         name: 'Quantum Racers',
         floorPrice: 3.2
       },
-      price: 22.8,
+      price: 12.0,
       currency: 'ETH',
-      rarity: 'Mythic',
+      rarity: 'Rare',
       category: 'Gaming',
       attributes: [
-        { trait_type: 'Speed', value: 99, rarity: 1 },
-        { trait_type: 'Acceleration', value: 96, rarity: 3 },
-        { trait_type: 'Engine', value: 'Quantum Drive', rarity: 0.5 },
-        { trait_type: 'Color', value: 'Holographic', rarity: 2 }
+        { trait_type: 'Speed', value: 'Quantum', rarity: 10 },
+        { trait_type: 'Engine', value: 'Fusion Core', rarity: 7 },
+        { trait_type: 'Color', value: 'Plasma Blue', rarity: 25 }
       ],
       stats: {
-        views: 15680,
-        likes: 1205,
-        sales: 8,
-        volume: 184.2
+        views: 1580,
+        likes: 124,
+        sales: 5,
+        volume: 68.5
       },
       isLiked: false,
       isForSale: true,
       isAuction: false,
       lastSale: {
-        price: 18.5,
+        price: 9.8,
         currency: 'ETH',
-        date: '2024-01-18'
+        date: '2024-01-18T09:15:00Z'
       },
       priceHistory: [
-        { price: 12.0, date: '2024-01-01' },
-        { price: 15.5, date: '2024-01-08' },
-        { price: 18.5, date: '2024-01-18' },
-        { price: 22.8, date: '2024-01-25' }
+        { price: 7.2, date: '2024-01-01' },
+        { price: 9.8, date: '2024-01-18' },
+        { price: 12.0, date: '2024-01-20' }
       ]
     },
     {
       id: 4,
       name: 'Mech Pilot Badge',
-      description: 'Elite pilot certification badge from the Mech Wars',
-      image: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=400&fit=crop',
+      description: 'An exclusive badge awarded to elite mech pilots in the METATOPIA universe.',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=elite%20mech%20pilot%20badge%20NFT%20with%20metallic%20finish&image_size=square',
       creator: {
         id: 7,
         username: 'MechCorps',
-        avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=40&h=40&fit=crop&crop=face',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=mech%20corps%20avatar&image_size=square',
         isVerified: true
       },
       owner: {
         id: 8,
         username: 'ElitePilot',
-        avatar: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=40&h=40&fit=crop&crop=face'
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=elite%20pilot%20avatar&image_size=square'
       },
       collection: {
         id: 4,
-        name: 'Mech Warriors',
+        name: 'Mech Corps Badges',
         floorPrice: 0.8
       },
-      price: 3.5,
+      price: 2.5,
       currency: 'ETH',
-      rarity: 'Rare',
+      rarity: 'Common',
       category: 'Collectibles',
       attributes: [
-        { trait_type: 'Rank', value: 'Elite', rarity: 10 },
-        { trait_type: 'Missions', value: 150, rarity: 5 },
-        { trait_type: 'Mech Type', value: 'Assault', rarity: 20 },
-        { trait_type: 'Service Years', value: 8, rarity: 15 }
+        { trait_type: 'Rank', value: 'Elite', rarity: 30 },
+        { trait_type: 'Material', value: 'Titanium', rarity: 40 },
+        { trait_type: 'Glow', value: 'Blue', rarity: 50 }
       ],
       stats: {
-        views: 5420,
-        likes: 387,
-        sales: 45,
-        volume: 67.8
+        views: 456,
+        likes: 34,
+        sales: 8,
+        volume: 18.2
       },
       isLiked: true,
-      isForSale: false,
+      isForSale: true,
       isAuction: false,
       lastSale: {
-        price: 2.8,
+        price: 1.8,
         currency: 'ETH',
-        date: '2024-01-12'
+        date: '2024-01-19T16:45:00Z'
       },
       priceHistory: [
-        { price: 1.5, date: '2024-01-01' },
-        { price: 2.1, date: '2024-01-06' },
-        { price: 2.8, date: '2024-01-12' },
-        { price: 3.5, date: '2024-01-20' }
+        { price: 1.2, date: '2024-01-01' },
+        { price: 1.8, date: '2024-01-19' },
+        { price: 2.5, date: '2024-01-20' }
       ]
     },
     {
       id: 5,
       name: 'Cosmic Symphony #42',
-      description: 'A harmonious blend of cosmic energies captured in digital form',
-      image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=400&fit=crop',
-      video: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      description: 'A unique audio-visual NFT that combines cosmic sounds with stunning visual effects.',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cosmic%20symphony%20NFT%20with%20musical%20waves%20and%20space%20theme&image_size=square',
       creator: {
         id: 9,
         username: 'CosmicComposer',
-        avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face',
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cosmic%20composer%20avatar&image_size=square',
         isVerified: true
       },
       owner: {
         id: 10,
         username: 'MusicLover',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop&crop=face'
+        avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=music%20lover%20avatar&image_size=square'
       },
       collection: {
         id: 5,
         name: 'Cosmic Symphonies',
-        floorPrice: 1.2
+        floorPrice: 1.5
       },
-      price: 6.7,
+      price: 6.8,
       currency: 'ETH',
-      rarity: 'Epic',
+      rarity: 'Rare',
       category: 'Music',
       attributes: [
-        { trait_type: 'Frequency', value: '432Hz', rarity: 8 },
-        { trait_type: 'Duration', value: '3:42', rarity: 25 },
-        { trait_type: 'Instruments', value: 'Cosmic', rarity: 5 },
-        { trait_type: 'Mood', value: 'Transcendent', rarity: 12 }
+        { trait_type: 'Duration', value: '3:42', rarity: 35 },
+        { trait_type: 'Key', value: 'C Major', rarity: 45 },
+        { trait_type: 'Tempo', value: '120 BPM', rarity: 60 }
       ],
       stats: {
-        views: 9850,
-        likes: 742,
-        sales: 28,
-        volume: 89.6
+        views: 723,
+        likes: 56,
+        sales: 4,
+        volume: 28.4
       },
       isLiked: false,
       isForSale: true,
       isAuction: true,
-      auctionEndTime: '2024-02-05T20:00:00Z',
+      auctionEndTime: '2024-01-24T12:00:00Z',
       lastSale: {
-        price: 5.2,
+        price: 4.2,
         currency: 'ETH',
-        date: '2024-01-14'
+        date: '2024-01-12T11:30:00Z'
       },
       priceHistory: [
-        { price: 3.8, date: '2024-01-01' },
-        { price: 4.5, date: '2024-01-07' },
-        { price: 5.2, date: '2024-01-14' },
-        { price: 6.7, date: '2024-01-21' }
+        { price: 3.5, date: '2024-01-01' },
+        { price: 4.2, date: '2024-01-12' },
+        { price: 6.8, date: '2024-01-20' }
       ]
     }
   ]
 
-  // Mock Collections data
   const collections: Collection[] = [
     {
       id: 1,
       name: 'Cyber Warriors',
-      description: 'Elite digital warriors from the cyber realm',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=300&fit=crop',
+      description: 'Elite digital warriors from the cyberpunk future',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cyber%20warriors%20collection%20banner&image_size=landscape_16_9',
       creator: 'CyberArtist',
       floorPrice: 2.5,
-      volume24h: 45.8,
+      volume24h: 156.8,
       change24h: 12.5,
       items: 10000,
       owners: 3420
@@ -369,165 +357,140 @@ const NFTMarket: React.FC = () => {
       id: 2,
       name: 'Mystic Artifacts',
       description: 'Ancient magical items with mysterious powers',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=mystic%20artifacts%20collection%20banner&image_size=landscape_16_9',
       creator: 'MysticCreator',
       floorPrice: 1.8,
-      volume24h: 32.4,
+      volume24h: 89.2,
       change24h: -5.2,
       items: 5000,
-      owners: 1890
+      owners: 1850
     },
     {
       id: 3,
       name: 'Quantum Racers',
-      description: 'High-speed vehicles from parallel dimensions',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
-      creator: 'QuantumDesigns',
+      description: 'High-speed vehicles for interdimensional racing',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=quantum%20racers%20collection%20banner&image_size=landscape_16_9',
+      creator: 'SpeedDesigner',
       floorPrice: 3.2,
-      volume24h: 78.9,
-      change24h: 8.7,
+      volume24h: 234.5,
+      change24h: 18.7,
       items: 7777,
-      owners: 2156
-    },
-    {
-      id: 4,
-      name: 'Mech Warriors',
-      description: 'Battle-tested mechanical warriors',
-      image: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop',
-      creator: 'MechCorps',
-      floorPrice: 0.8,
-      volume24h: 18.6,
-      change24h: 3.4,
-      items: 15000,
-      owners: 4567
-    },
-    {
-      id: 5,
-      name: 'Cosmic Symphonies',
-      description: 'Musical NFTs that resonate with the universe',
-      image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop',
-      creator: 'CosmicComposer',
-      floorPrice: 1.2,
-      volume24h: 25.7,
-      change24h: 15.8,
-      items: 3333,
-      owners: 987
-    },
-    {
-      id: 6,
-      name: 'Digital Landscapes',
-      description: 'Breathtaking virtual worlds and environments',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-      creator: 'WorldBuilder',
-      floorPrice: 2.1,
-      volume24h: 41.3,
-      change24h: -2.8,
-      items: 8888,
-      owners: 2789
+      owners: 2890
     }
   ]
 
-  // Filter options
   const categories = [
-    { id: 'all', name: '全部分类' },
-    { id: 'art', name: '艺术' },
-    { id: 'gaming', name: '游戏' },
-    { id: 'music', name: '音乐' },
-    { id: 'sports', name: '体育' },
-    { id: 'collectibles', name: '收藏品' },
-    { id: 'virtual-worlds', name: '虚拟世界' }
+    { id: 'all', name: '全部', icon: Grid3X3 },
+    { id: 'Art', name: '艺术', icon: Palette },
+    { id: 'Gaming', name: '游戏', icon: Gamepad2 },
+    { id: 'Music', name: '音乐', icon: Music },
+    { id: 'Sports', name: '体育', icon: Award },
+    { id: 'Collectibles', name: '收藏品', icon: Star },
+    { id: 'Virtual Worlds', name: '虚拟世界', icon: Eye }
   ]
 
   const rarities = [
-    { id: 'all', name: '全部稀有度' },
-    { id: 'common', name: '普通' },
-    { id: 'rare', name: '稀有' },
-    { id: 'epic', name: '史诗' },
-    { id: 'legendary', name: '传说' },
-    { id: 'mythic', name: '神话' }
+    { id: 'all', name: '全部稀有度', color: 'text-gray-400' },
+    { id: 'Common', name: '普通', color: 'text-gray-400' },
+    { id: 'Rare', name: '稀有', color: 'text-blue-400' },
+    { id: 'Epic', name: '史诗', color: 'text-purple-400' },
+    { id: 'Legendary', name: '传说', color: 'text-orange-400' },
+    { id: 'Mythic', name: '神话', color: 'text-red-400' }
   ]
 
   const sortOptions = [
+    { id: 'price_low', name: '价格：低到高' },
+    { id: 'price_high', name: '价格：高到低' },
     { id: 'newest', name: '最新上架' },
     { id: 'oldest', name: '最早上架' },
-    { id: 'price-low', name: '价格从低到高' },
-    { id: 'price-high', name: '价格从高到低' },
-    { id: 'most-liked', name: '最受欢迎' },
-    { id: 'most-viewed', name: '浏览最多' }
+    { id: 'most_liked', name: '最多喜欢' },
+    { id: 'most_viewed', name: '最多浏览' }
   ]
 
-  // Filtered and sorted NFTs
   const filteredNFTs = useMemo(() => {
     let filtered = nfts.filter(nft => {
       const matchesSearch = nft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           nft.creator.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           nft.collection.name.toLowerCase().includes(searchTerm.toLowerCase())
+                           nft.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           nft.creator.username.toLowerCase().includes(searchTerm.toLowerCase())
       
-      const matchesCategory = selectedCategory === 'all' || 
-                             nft.category.toLowerCase().replace(' ', '-') === selectedCategory
-      
-      const matchesRarity = selectedRarity === 'all' || 
-                           nft.rarity.toLowerCase() === selectedRarity
-      
+      const matchesCategory = selectedCategory === 'all' || nft.category === selectedCategory
+      const matchesRarity = selectedRarity === 'all' || nft.rarity === selectedRarity
       const matchesPrice = nft.price >= priceRange[0] && nft.price <= priceRange[1]
       
       return matchesSearch && matchesCategory && matchesRarity && matchesPrice
     })
 
-    // Sort
-    switch (sortBy) {
-      case 'price-low':
-        filtered.sort((a, b) => a.price - b.price)
-        break
-      case 'price-high':
-        filtered.sort((a, b) => b.price - a.price)
-        break
-      case 'most-liked':
-        filtered.sort((a, b) => b.stats.likes - a.stats.likes)
-        break
-      case 'most-viewed':
-        filtered.sort((a, b) => b.stats.views - a.stats.views)
-        break
-      case 'oldest':
-        filtered.sort((a, b) => a.id - b.id)
-        break
-      default: // newest
-        filtered.sort((a, b) => b.id - a.id)
-    }
+    // 排序
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'price_low':
+          return a.price - b.price
+        case 'price_high':
+          return b.price - a.price
+        case 'most_liked':
+          return b.stats.likes - a.stats.likes
+        case 'most_viewed':
+          return b.stats.views - a.stats.views
+        default:
+          return b.id - a.id
+      }
+    })
 
     return filtered
   }, [nfts, searchTerm, selectedCategory, selectedRarity, priceRange, sortBy])
 
-  // Handle NFT actions
   const handleLikeNFT = async (nftId: number) => {
     setLoadingAction(`like-${nftId}`)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500))
-    showToast.success('已添加到收藏')
-    setLoadingAction(null)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      const nft = nfts.find(n => n.id === nftId)
+      if (nft) {
+        nft.isLiked = !nft.isLiked
+        nft.stats.likes += nft.isLiked ? 1 : -1
+        showToast.success(nft.isLiked ? '已添加到收藏' : '已从收藏移除')
+      }
+    } catch (error) {
+      showToast.error('操作失败')
+    } finally {
+      setLoadingAction(null)
+    }
   }
 
   const handleBuyNFT = async (nftId: number) => {
     setLoadingAction(`buy-${nftId}`)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    showToast.success('购买成功！NFT已添加到您的钱包')
-    setLoadingAction(null)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      const nft = nfts.find(n => n.id === nftId)
+      if (nft) {
+        showToast.success(`成功购买 ${nft.name}！`)
+        nft.isForSale = false
+      }
+    } catch (error) {
+      showToast.error('购买失败')
+    } finally {
+      setLoadingAction(null)
+    }
   }
 
   const handlePlaceBid = async (nftId: number) => {
     setLoadingAction(`bid-${nftId}`)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    showToast.success('出价成功！')
-    setLoadingAction(null)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      const nft = nfts.find(n => n.id === nftId)
+      if (nft) {
+        showToast.success(`成功出价 ${nft.name}！`)
+      }
+    } catch (error) {
+      showToast.error('出价失败')
+    } finally {
+      setLoadingAction(null)
+    }
   }
 
-  // Format auction time
-  const formatAuctionTime = (endTime: string) => {
-    const end = new Date(endTime)
+  const formatTime = (timestamp: string) => {
+    const time = new Date(timestamp)
     const now = new Date()
-    const diff = end.getTime() - now.getTime()
+    const diff = time.getTime() - now.getTime()
     
     if (diff <= 0) return '已结束'
     
@@ -540,16 +503,9 @@ const NFTMarket: React.FC = () => {
     return `${minutes}分钟`
   }
 
-  // Get rarity color
   const getRarityColor = (rarity: string) => {
-    switch (rarity.toLowerCase()) {
-      case 'common': return 'text-gray-400'
-      case 'rare': return 'text-blue-400'
-      case 'epic': return 'text-purple-400'
-      case 'legendary': return 'text-orange-400'
-      case 'mythic': return 'text-red-400'
-      default: return 'text-gray-400'
-    }
+    const rarityObj = rarities.find(r => r.id === rarity)
+    return rarityObj?.color || 'text-gray-400'
   }
 
   const NFTCard: React.FC<{ nft: NFT; index: number }> = ({ nft, index }) => (
@@ -558,115 +514,88 @@ const NFTMarket: React.FC = () => {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="card-gaming hover:scale-105 transition-all duration-300 cursor-pointer"
+      className="card-gaming group hover:scale-105 transition-all duration-300 cursor-pointer"
       onClick={() => setSelectedNFT(selectedNFT === nft.id ? null : nft.id)}
     >
+      {/* NFT Image */}
       <div className="relative overflow-hidden rounded-lg mb-4">
-        {/* NFT Image/Video */}
-        {nft.video ? (
-          <video
-            src={nft.video}
-            poster={nft.image}
-            className="w-full h-64 object-cover"
-            muted
-            loop
-            onMouseEnter={(e) => e.currentTarget.play()}
-            onMouseLeave={(e) => e.currentTarget.pause()}
-          />
-        ) : (
-          <img
-            src={nft.image}
-            alt={nft.name}
-            className="w-full h-64 object-cover"
-          />
-        )}
+        <img
+          src={nft.image}
+          alt={nft.name}
+          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+        />
         
-        {/* Rarity Badge */}
-        <div className={cn(
-          "absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm",
-          getRarityColor(nft.rarity),
-          "bg-black/50"
-        )}>
-          {nft.rarity}
-        </div>
-        
-        {/* Auction Timer */}
-        {nft.isAuction && nft.auctionEndTime && (
-          <div className="absolute top-3 right-3 bg-red-500/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-white flex items-center space-x-1">
-            <Clock className="w-3 h-3" />
-            <span>{formatAuctionTime(nft.auctionEndTime)}</span>
-          </div>
-        )}
-        
-        {/* Action Buttons */}
-        <div className="absolute bottom-3 right-3 flex space-x-2">
-          <FloatingTooltip content={nft.isLiked ? '取消收藏' : '添加收藏'}>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div className="flex space-x-2">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 handleLikeNFT(nft.id)
               }}
+              disabled={loadingAction === `like-${nft.id}`}
               className={cn(
-                "p-2 rounded-full backdrop-blur-sm transition-colors",
-                nft.isLiked ? 'bg-red-500/90 text-white' : 'bg-black/50 text-gray-300 hover:text-red-400'
+                "p-2 rounded-lg transition-colors",
+                nft.isLiked ? 'bg-red-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
               )}
             >
               <Heart className={cn("w-4 h-4", nft.isLiked && "fill-current")} />
             </button>
-          </FloatingTooltip>
-          <FloatingTooltip content="分享">
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                showToast.success('链接已复制到剪贴板')
-              }}
-              className="p-2 rounded-full bg-black/50 backdrop-blur-sm text-gray-300 hover:text-white transition-colors"
-            >
+            <button className="p-2 bg-white/20 text-white hover:bg-white/30 rounded-lg transition-colors">
               <Share2 className="w-4 h-4" />
             </button>
-          </FloatingTooltip>
-          <FloatingTooltip content="在新窗口打开">
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                window.open(`/nft/${nft.id}`, '_blank')
-              }}
-              className="p-2 rounded-full bg-black/50 backdrop-blur-sm text-gray-300 hover:text-white transition-colors"
-            >
+            <button className="p-2 bg-white/20 text-white hover:bg-white/30 rounded-lg transition-colors">
               <ExternalLink className="w-4 h-4" />
             </button>
-          </FloatingTooltip>
-        </div>
-      </div>
-      
-      <div className="space-y-3">
-        {/* NFT Info */}
-        <div>
-          <h3 className="text-white font-tech font-bold text-lg">{nft.name}</h3>
-          <p className="text-gray-400 text-sm line-clamp-2">{nft.description}</p>
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center space-x-2">
-              <img
-                src={nft.creator.avatar}
-                alt={nft.creator.username}
-                className="w-6 h-6 rounded-full"
-              />
-              <div>
-                <div className="flex items-center space-x-1">
-                  <span className="text-xs text-gray-400">by</span>
-                  <span className="text-xs text-white font-medium">{nft.creator.username}</span>
-                  {nft.creator.isVerified && (
-                    <AnimatedIcon 
-                      icon={<Star className="w-3 h-3 text-blue-400 fill-current" />} 
-                      className="w-3 h-3" 
-                      animation="pulse"
-                    />
-                  )}
-                </div>
-                <div className="text-xs text-gray-500">{nft.collection.name}</div>
-              </div>
-            </div>
           </div>
+        </div>
+        
+        {/* Rarity Badge */}
+        <div className="absolute top-2 left-2">
+          <span className={cn(
+            "px-2 py-1 rounded-full text-xs font-bold bg-black/70",
+            getRarityColor(nft.rarity)
+          )}>
+            {nft.rarity}
+          </span>
+        </div>
+        
+        {/* Auction Timer */}
+        {nft.isAuction && nft.auctionEndTime && (
+          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+            <Clock className="w-3 h-3 inline mr-1" />
+            {formatTime(nft.auctionEndTime)}
+          </div>
+        )}
+      </div>
+
+      {/* NFT Info */}
+      <div className="space-y-3">
+        <div>
+          <h3 className="text-white font-tech font-bold text-lg mb-1">{nft.name}</h3>
+          <p className="text-gray-400 text-sm line-clamp-2">{nft.description}</p>
+        </div>
+        
+        {/* Creator & Collection */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center space-x-2">
+            <img
+              src={nft.creator.avatar}
+              alt={nft.creator.username}
+              className="w-6 h-6 rounded-full"
+            />
+            <span className="text-gray-400">by</span>
+            <span className="text-neon-400">{nft.creator.username}</span>
+            {nft.creator.isVerified && (
+              <div className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs">✓</span>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="text-xs text-gray-500">
+          Collection: <span className="text-gray-400">{nft.collection.name}</span>
         </div>
         
         {/* Stats */}
