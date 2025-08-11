@@ -82,90 +82,81 @@ const Profile: React.FC = () => {
   const [showPrivateInfo, setShowPrivateInfo] = useState(false)
   const [loadingAction, setLoadingAction] = useState<string | null>(null)
 
-  // Mock user data
   const [userProfile, setUserProfile] = useState<UserProfile>({
     id: 1,
-    username: 'CyberWarrior2024',
-    email: 'warrior@metatopia.com',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
-    coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=300&fit=crop',
-    bio: '专业电竞玩家，专注于FPS和MOBA游戏。热爱竞技，追求极致操作。',
-    level: 42,
-    experience: 8750,
-    nextLevelExp: 10000,
-    joinDate: '2023-01-15',
+    username: 'CyberGamer2024',
+    email: 'cyber.gamer@metatopia.com',
+    avatar: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cyberpunk%20gamer%20avatar%20with%20neon%20effects&image_size=square',
+    coverImage: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=cyberpunk%20gaming%20setup%20with%20neon%20lights%20and%20multiple%20monitors&image_size=landscape_16_9',
+    bio: '专业电竞选手 | NFT收藏家 | METATOPIA资深玩家。热爱挑战，追求极致游戏体验！',
+    level: 89,
+    experience: 234500,
+    nextLevelExp: 250000,
+    joinDate: '2023-03-15T10:30:00Z',
     isVerified: true,
     stats: {
       gamesPlayed: 1247,
       tournamentsWon: 23,
       nftsOwned: 156,
-      friendsCount: 89,
-      totalEarnings: 12450.75,
-      winRate: 73.2
+      friendsCount: 342,
+      totalEarnings: 45.8,
+      winRate: 78.5
     },
     achievements: [
       {
         id: 1,
         name: '传奇战士',
         description: '在竞技模式中获得100场胜利',
-        icon: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=64&h=64&fit=crop',
+        icon: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=legendary%20warrior%20achievement%20badge&image_size=square',
         rarity: 'Legendary',
-        unlockedAt: '2024-01-15T10:30:00Z'
+        unlockedAt: '2024-01-15T14:30:00Z'
       },
       {
         id: 2,
         name: 'NFT大师',
         description: '收集超过100个NFT',
-        icon: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=64&h=64&fit=crop',
+        icon: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=NFT%20master%20achievement%20badge&image_size=square',
         rarity: 'Epic',
-        unlockedAt: '2024-01-10T14:20:00Z'
+        unlockedAt: '2024-01-10T09:15:00Z'
       },
       {
         id: 3,
         name: '社交达人',
-        description: '添加50个好友',
-        icon: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=64&h=64&fit=crop',
+        description: '添加超过300个好友',
+        icon: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=social%20master%20achievement%20badge&image_size=square',
         rarity: 'Rare',
-        unlockedAt: '2024-01-05T09:15:00Z'
+        unlockedAt: '2024-01-05T16:45:00Z'
       },
       {
         id: 4,
-        name: '首次胜利',
-        description: '赢得你的第一场比赛',
-        icon: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=64&h=64&fit=crop',
-        rarity: 'Common',
-        unlockedAt: '2023-01-16T16:45:00Z'
+        name: '冠军之路',
+        description: '赢得第一场锦标赛',
+        icon: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=champion%20achievement%20badge&image_size=square',
+        rarity: 'Epic',
+        unlockedAt: '2023-12-20T20:00:00Z'
       },
       {
         id: 5,
-        name: '锦标赛冠军',
-        description: '赢得官方锦标赛冠军',
-        icon: 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=64&h=64&fit=crop',
-        rarity: 'Legendary',
-        unlockedAt: '2024-01-20T18:30:00Z'
-      },
-      {
-        id: 6,
-        name: '连胜王者',
-        description: '获得20连胜',
-        icon: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=64&h=64&fit=crop',
-        rarity: 'Epic',
-        unlockedAt: '2024-01-12T12:00:00Z'
+        name: '新手上路',
+        description: '完成第一场游戏',
+        icon: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=beginner%20achievement%20badge&image_size=square',
+        rarity: 'Common',
+        unlockedAt: '2023-03-15T11:00:00Z'
       }
     ],
     wallet: {
       address: '0x742d35Cc6634C0532925a3b8D4C0532925a3b8D4',
       balance: {
-        ETH: 2.5,
-        MTP: 15000,
-        USDT: 1250.50
+        ETH: 12.5847,
+        MTP: 25680.42,
+        USDT: 8945.67
       },
       nfts: 156,
       transactions: [
         {
           id: 'tx_001',
           type: 'reward',
-          amount: 500,
+          amount: 150.5,
           currency: 'MTP',
           status: 'completed',
           timestamp: '2024-01-20T10:30:00Z',
@@ -174,29 +165,29 @@ const Profile: React.FC = () => {
         {
           id: 'tx_002',
           type: 'trade',
-          amount: -0.1,
+          amount: -2.5,
           currency: 'ETH',
           status: 'completed',
           timestamp: '2024-01-19T15:45:00Z',
-          description: 'NFT购买'
+          description: '购买NFT: Cyber Warrior #001'
         },
         {
           id: 'tx_003',
           type: 'deposit',
-          amount: 1000,
-          currency: 'USDT',
+          amount: 5.0,
+          currency: 'ETH',
           status: 'completed',
           timestamp: '2024-01-18T09:20:00Z',
-          description: '账户充值'
+          description: '钱包充值'
         },
         {
           id: 'tx_004',
           type: 'withdrawal',
-          amount: -200,
-          currency: 'MTP',
+          amount: -1000.0,
+          currency: 'USDT',
           status: 'pending',
           timestamp: '2024-01-17T14:10:00Z',
-          description: '提现到钱包'
+          description: '提现到银行卡'
         }
       ]
     },
@@ -217,102 +208,82 @@ const Profile: React.FC = () => {
       security: {
         twoFactorEnabled: true,
         loginAlerts: true,
-        deviceManagement: false
+        deviceManagement: true
       }
     }
   })
 
-  // Edit form state
   const [editForm, setEditForm] = useState({
     username: userProfile.username,
-    email: userProfile.email,
-    bio: userProfile.bio
+    bio: userProfile.bio,
+    email: userProfile.email
   })
 
   const handleSaveProfile = async () => {
     setLoadingAction('save-profile')
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
       setUserProfile(prev => ({
         ...prev,
         username: editForm.username,
-        email: editForm.email,
-        bio: editForm.bio
+        bio: editForm.bio,
+        email: editForm.email
       }))
-      
       setIsEditing(false)
-      showToast('个人资料已更新', 'success')
+      showToast.success('个人资料已更新')
     } catch (error) {
-      showToast('更新失败，请重试', 'error')
+      showToast.error('更新失败')
     } finally {
       setLoadingAction(null)
     }
   }
 
-  const handleCopyAddress = async () => {
-    try {
-      await navigator.clipboard.writeText(userProfile.wallet.address)
-      showToast('钱包地址已复制', 'success')
-    } catch (error) {
-      showToast('复制失败', 'error')
-    }
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(userProfile.wallet.address)
+    showToast.success('钱包地址已复制')
   }
 
-  const handleToggleSetting = async (category: string, key: string) => {
-    const actionKey = `${category}-${key}`
-    setLoadingAction(actionKey)
-    
+  const handleToggleSetting = async (category: keyof UserProfile['settings'], setting: string) => {
+    setLoadingAction(`${category}-${setting}`)
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500))
-      
       setUserProfile(prev => ({
         ...prev,
         settings: {
           ...prev.settings,
           [category]: {
-            ...prev.settings[category as keyof typeof prev.settings],
-            [key]: !prev.settings[category as keyof typeof prev.settings][key as keyof any]
+            ...prev.settings[category],
+            [setting]: !prev.settings[category][setting as keyof typeof prev.settings[typeof category]]
           }
         }
       }))
-      
-      showToast('设置已更新', 'success')
+      showToast.success('设置已更新')
     } catch (error) {
-      showToast('更新失败，请重试', 'error')
+      showToast.error('更新失败')
     } finally {
       setLoadingAction(null)
     }
   }
 
-  // Helper functions
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('zh-CN', {
+  const formatDate = (timestamp: string) => {
+    return new Date(timestamp).toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     })
   }
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleString('zh-CN')
   }
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'Common': return 'bg-gray-500 text-white'
-      case 'Rare': return 'bg-blue-500 text-white'
-      case 'Epic': return 'bg-purple-500 text-white'
-      case 'Legendary': return 'bg-yellow-500 text-black'
-      default: return 'bg-gray-500 text-white'
+      case 'Common': return 'text-gray-400 bg-gray-400/20'
+      case 'Rare': return 'text-blue-400 bg-blue-400/20'
+      case 'Epic': return 'text-purple-400 bg-purple-400/20'
+      case 'Legendary': return 'text-orange-400 bg-orange-400/20'
+      default: return 'text-gray-400 bg-gray-400/20'
     }
   }
 
@@ -320,7 +291,7 @@ const Profile: React.FC = () => {
     switch (type) {
       case 'deposit': return <Download className="w-4 h-4 text-green-400" />
       case 'withdrawal': return <Upload className="w-4 h-4 text-red-400" />
-      case 'trade': return <TrendingUp className="w-4 h-4 text-blue-400" />
+      case 'trade': return <ExternalLink className="w-4 h-4 text-blue-400" />
       case 'reward': return <Gift className="w-4 h-4 text-yellow-400" />
       default: return <CreditCard className="w-4 h-4 text-gray-400" />
     }
@@ -338,10 +309,15 @@ const Profile: React.FC = () => {
   const experiencePercentage = (userProfile.experience / userProfile.nextLevelExp) * 100
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-primary-950 pt-20">
+      <div className="container mx-auto px-4 lg:px-6 py-8">
         {/* Profile Header */}
-        <div className="relative mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative mb-12"
+        >
           {/* Cover Image */}
           <div className="relative h-64 rounded-xl overflow-hidden">
             <img
@@ -349,17 +325,18 @@ const Profile: React.FC = () => {
               alt="Cover"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+            
+            {/* Edit Cover Button */}
             <AnimatedButton
               variant="ghost"
               size="sm"
-              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white"
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70"
             >
-              <Camera className="w-4 h-4 mr-2" />
-              编辑封面
+              <Camera className="w-4 h-4 text-white" />
             </AnimatedButton>
           </div>
-
+          
           {/* Profile Info */}
           <div className="relative -mt-20 px-6">
             <div className="flex flex-col md:flex-row items-start md:items-end space-y-4 md:space-y-0 md:space-x-6">
@@ -368,108 +345,112 @@ const Profile: React.FC = () => {
                 <img
                   src={userProfile.avatar}
                   alt={userProfile.username}
-                  className="w-32 h-32 rounded-full border-4 border-primary-800 bg-primary-800"
+                  className="w-32 h-32 rounded-full border-4 border-primary-900 object-cover"
                 />
                 <AnimatedButton
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="absolute bottom-2 right-2 w-8 h-8 p-0 bg-neon-500 hover:bg-neon-600 text-black rounded-full"
+                  className="absolute bottom-2 right-2 rounded-full"
                 >
-                  <Camera className="w-4 h-4" />
+                  <Camera className="w-3 h-3 text-white" />
                 </AnimatedButton>
               </div>
-
+              
               {/* User Info */}
-              <div className="flex-1 text-white">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-tech font-bold">{userProfile.username}</h1>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center space-x-3">
+                  <h1 className="text-3xl font-gaming font-bold text-white">
+                    {userProfile.username}
+                  </h1>
                   {userProfile.isVerified && (
-                    <div className="bg-neon-500 text-black px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                      <Star className="w-3 h-3 mr-1" />
-                      认证
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm">✓</span>
                     </div>
                   )}
-                  <div className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                  <span className="bg-primary-700 text-gray-300 px-3 py-1 rounded-full text-sm">
                     Lv.{userProfile.level}
-                  </div>
+                  </span>
                 </div>
-                <p className="text-gray-300 mb-3 max-w-2xl">{userProfile.bio}</p>
-                <div className="flex items-center space-x-6 text-sm text-gray-400">
-                  <div className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    加入于 {formatDate(userProfile.joinDate)}
+                
+                <p className="text-gray-400 max-w-2xl">{userProfile.bio}</p>
+                
+                <div className="flex items-center space-x-4 text-sm text-gray-400">
+                  <div className="flex items-center space-x-1">
+                    <Clock className="w-4 h-4" />
+                    <span>加入于 {formatDate(userProfile.joinDate)}</span>
                   </div>
-                  <div className="flex items-center">
-                    <User className="w-4 h-4 mr-1" />
-                    {userProfile.stats.friendsCount} 好友
+                  <div className="flex items-center space-x-1">
+                    <User className="w-4 h-4" />
+                    <span>{userProfile.stats.friendsCount} 好友</span>
                   </div>
                 </div>
                 
                 {/* Experience Bar */}
-                <div className="mt-4 max-w-md">
-                  <div className="flex justify-between text-sm text-gray-400 mb-1">
-                    <span>经验值</span>
-                    <span>{userProfile.experience} / {userProfile.nextLevelExp}</span>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">经验值</span>
+                    <span className="text-neon-400">
+                      {userProfile.experience.toLocaleString()} / {userProfile.nextLevelExp.toLocaleString()}
+                    </span>
                   </div>
-                  <div className="w-full bg-primary-700 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-neon-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                  <div className="w-full bg-primary-800 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-neon-500 to-neon-400 h-2 rounded-full transition-all duration-500"
                       style={{ width: `${experiencePercentage}%` }}
                     />
                   </div>
                 </div>
               </div>
-
+              
               {/* Action Buttons */}
-              <div className="flex space-x-3">
+              <div className="flex space-x-2">
                 <AnimatedButton
-                  onClick={() => setIsEditing(true)}
-                  variant="outline"
-                  className="border-neon-500 text-neon-500 hover:bg-neon-500 hover:text-black"
+                  onClick={() => setIsEditing(!isEditing)}
+                  variant="primary"
+                  size="md"
+                  className="flex items-center space-x-2"
                 >
-                  <Edit className="w-4 h-4 mr-2" />
-                  编辑资料
+                  <Edit className="w-4 h-4" />
+                  <span>编辑资料</span>
                 </AnimatedButton>
                 <AnimatedButton
-                  variant="ghost"
-                  className="text-gray-400 hover:text-white"
+                  variant="secondary"
+                  size="md"
                 >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  分享
+                  <Share2 className="w-4 h-4 text-gray-400" />
                 </AnimatedButton>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Edit Profile Modal */}
         {isEditing && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => setIsEditing(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-primary-800 rounded-xl p-6 w-full max-w-md"
-              onClick={(e) => e.stopPropagation()}
+              className="bg-primary-900 rounded-xl p-6 w-full max-w-md space-y-4"
             >
               <h2 className="text-xl font-tech font-bold text-white mb-4">编辑个人资料</h2>
+              
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">用户名</label>
+                  <label className="block text-gray-400 text-sm mb-2">用户名</label>
                   <AnimatedInput
+                    type="text"
                     value={editForm.username}
                     onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
                     className="w-full"
                   />
                 </div>
+                
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">邮箱</label>
+                  <label className="block text-gray-400 text-sm mb-2">邮箱</label>
                   <AnimatedInput
                     type="email"
                     value={editForm.email}
@@ -477,21 +458,24 @@ const Profile: React.FC = () => {
                     className="w-full"
                   />
                 </div>
+                
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">个人简介</label>
+                  <label className="block text-gray-400 text-sm mb-2">个人简介</label>
                   <textarea
                     value={editForm.bio}
                     onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
-                    className="w-full px-3 py-2 bg-primary-700 border border-primary-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-neon-500 focus:border-transparent resize-none"
                     rows={3}
-                    placeholder="介绍一下你自己..."
+                    className="w-full px-4 py-3 bg-primary-800 border border-primary-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent-400 transition-colors"
+                    placeholder="输入个人简介..."
                   />
                 </div>
               </div>
-              <div className="flex space-x-3 mt-6">
+              
+              <div className="flex space-x-3 pt-4">
                 <AnimatedButton
                   onClick={() => setIsEditing(false)}
-                  variant="ghost"
+                  variant="secondary"
+                  size="md"
                   className="flex-1"
                 >
                   取消
@@ -499,7 +483,9 @@ const Profile: React.FC = () => {
                 <AnimatedButton
                   onClick={handleSaveProfile}
                   disabled={loadingAction === 'save-profile'}
-                  className="flex-1 bg-neon-500 hover:bg-neon-600 text-black"
+                  variant="primary"
+                  size="md"
+                  className="flex-1"
                 >
                   {loadingAction === 'save-profile' ? '保存中...' : '保存'}
                 </AnimatedButton>
@@ -514,111 +500,92 @@ const Profile: React.FC = () => {
             { label: '游戏场次', value: userProfile.stats.gamesPlayed, icon: Gamepad2, color: 'text-blue-400' },
             { label: '锦标赛胜利', value: userProfile.stats.tournamentsWon, icon: Trophy, color: 'text-yellow-400' },
             { label: 'NFT收藏', value: userProfile.stats.nftsOwned, icon: Star, color: 'text-purple-400' },
-            { label: '好友数量', value: userProfile.stats.friendsCount, icon: Heart, color: 'text-pink-400' },
-            { label: '总收益', value: `$${userProfile.stats.totalEarnings.toLocaleString()}`, icon: TrendingUp, color: 'text-green-400' },
-            { label: '胜率', value: `${userProfile.stats.winRate}%`, icon: Award, color: 'text-orange-400' }
-          ].map((stat, index) => (
-            <ScrollAnimation key={stat.label} delay={index * 0.1}>
-              <AnimatedCard className="text-center p-4">
-                <stat.icon className={cn("w-8 h-8 mx-auto mb-2", stat.color)} />
-                <div className="text-2xl font-tech font-bold text-white mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-gray-400">{stat.label}</div>
-              </AnimatedCard>
-            </ScrollAnimation>
-          ))}
+            { label: '好友数量', value: userProfile.stats.friendsCount, icon: User, color: 'text-green-400' },
+            { label: '总收益', value: `${userProfile.stats.totalEarnings} ETH`, icon: TrendingUp, color: 'text-orange-400' },
+            { label: '胜率', value: `${userProfile.stats.winRate}%`, icon: Award, color: 'text-red-400' }
+          ].map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <ScrollAnimation key={index} delay={index * 0.1}>
+                <AnimatedCard className="text-center">
+                  <Icon className={cn("w-6 h-6 mx-auto mb-2", stat.color)} />
+                  <div className="text-xl font-bold text-white mb-1">{stat.value}</div>
+                  <div className="text-xs text-gray-400">{stat.label}</div>
+                </AnimatedCard>
+              </ScrollAnimation>
+            )
+          })}
         </div>
 
         {/* Tabs */}
-        <div className="mb-8">
-          <div className="flex space-x-1 bg-primary-800 p-1 rounded-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex justify-center mb-8"
+        >
+          <div className="flex bg-primary-800 rounded-lg p-1">
             {[
               { id: 'overview', label: '概览', icon: User },
               { id: 'wallet', label: '钱包', icon: Wallet },
               { id: 'achievements', label: '成就', icon: Trophy },
               { id: 'settings', label: '设置', icon: Settings }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={cn(
-                  "flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-md transition-all duration-200 font-medium",
-                  activeTab === tab.id
-                    ? "bg-neon-500 text-black"
-                    : "text-gray-400 hover:text-white hover:bg-primary-700"
-                )}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            ))}
+            ].map(tab => {
+              const Icon = tab.icon
+              return (
+                <AnimatedButton
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  variant={activeTab === tab.id ? "primary" : "ghost"}
+                  size="md"
+                  className="flex items-center space-x-2"
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </AnimatedButton>
+              )
+            })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Tab Content */}
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.6 }}
         >
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-2xl font-tech font-bold text-white mb-2">最近活动</h2>
+                <h2 className="text-2xl font-tech font-bold text-white mb-2">个人概览</h2>
                 <p className="text-gray-400">查看你的游戏历程和成就</p>
               </div>
               
-              <div className="grid gap-4">
-                {[
-                  {
-                    type: 'tournament',
-                    title: '赢得春季锦标赛冠军',
-                    description: '在Cyber Warriors春季锦标赛中获得第一名',
-                    time: '2小时前',
-                    icon: Trophy,
-                    color: 'text-yellow-400'
-                  },
-                  {
-                    type: 'nft',
-                    title: '购买稀有NFT',
-                    description: '获得传奇级别的"龙之剑"NFT',
-                    time: '1天前',
-                    icon: Star,
-                    color: 'text-purple-400'
-                  },
-                  {
-                    type: 'friend',
-                    title: '添加新好友',
-                    description: '与ProGamer123成为好友',
-                    time: '2天前',
-                    icon: Heart,
-                    color: 'text-pink-400'
-                  },
-                  {
-                    type: 'achievement',
-                    title: '解锁新成就',
-                    description: '获得"连胜王者"成就徽章',
-                    time: '3天前',
-                    icon: Award,
-                    color: 'text-orange-400'
-                  }
-                ].map((activity, index) => (
-                  <ScrollAnimation key={index} delay={index * 0.1}>
-                    <AnimatedCard className="flex items-center space-x-4 p-4">
-                      <div className={cn("w-12 h-12 rounded-full bg-primary-700 flex items-center justify-center", activity.color)}>
-                        <activity.icon className="w-6 h-6" />
+              {/* Recent Activity */}
+              <div className="card-gaming">
+                <h3 className="text-xl font-tech font-bold text-white mb-4">最近活动</h3>
+                <div className="space-y-4">
+                  {[
+                    { type: 'tournament', title: '赢得METATOPIA冠军杯', time: '2小时前', icon: Trophy, color: 'text-yellow-400' },
+                    { type: 'nft', title: '购买了 Cyber Warrior #001', time: '1天前', icon: Star, color: 'text-purple-400' },
+                    { type: 'friend', title: '添加了新好友 DragonSlayer', time: '2天前', icon: User, color: 'text-green-400' },
+                    { type: 'achievement', title: '解锁成就：传奇战士', time: '5天前', icon: Award, color: 'text-orange-400' }
+                  ].map((activity, index) => {
+                    const Icon = activity.icon
+                    return (
+                      <div key={index} className="flex items-center space-x-4 p-3 bg-primary-800 rounded-lg">
+                        <Icon className={cn("w-5 h-5", activity.color)} />
+                        <div className="flex-1">
+                          <div className="text-white font-medium">{activity.title}</div>
+                          <div className="text-gray-400 text-sm">{activity.time}</div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-medium">{activity.title}</h3>
-                        <p className="text-gray-400 text-sm">{activity.description}</p>
-                      </div>
-                      <div className="text-gray-500 text-sm">{activity.time}</div>
-                    </AnimatedCard>
-                  </ScrollAnimation>
-                ))}
+                    )
+                  })}
+                </div>
               </div>
             </div>
           )}
@@ -627,82 +594,86 @@ const Profile: React.FC = () => {
           {activeTab === 'wallet' && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-2xl font-tech font-bold text-white mb-2">我的钱包</h2>
-                <p className="text-gray-400">管理你的数字资产和交易记录</p>
+                <h2 className="text-2xl font-tech font-bold text-white mb-2">数字钱包</h2>
+                <p className="text-gray-400">管理你的数字资产</p>
               </div>
               
               {/* Wallet Address */}
-              <AnimatedCard className="p-6">
+              <div className="card-gaming">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-tech font-bold text-white">钱包地址</h3>
                   <AnimatedButton
-                    onClick={() => setShowPrivateInfo(!showPrivateInfo)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-400 hover:text-white"
-                  >
-                    {showPrivateInfo ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      onClick={() => setShowPrivateInfo(!showPrivateInfo)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      {showPrivateInfo ? (
+                        <EyeOff className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <Eye className="w-4 h-4 text-gray-400" />
+                      )}
                   </AnimatedButton>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <code className="flex-1 bg-primary-700 px-3 py-2 rounded text-white font-mono text-sm">
-                    {showPrivateInfo ? userProfile.wallet.address : '0x742d35...925a3b8D4'}
+                <div className="flex items-center space-x-3 p-3 bg-primary-800 rounded-lg">
+                  <code className="flex-1 text-gray-300 font-mono text-sm">
+                    {showPrivateInfo ? userProfile.wallet.address : '0x742d35...25a3b8D4'}
                   </code>
                   <AnimatedButton
                     onClick={handleCopyAddress}
                     variant="ghost"
                     size="sm"
-                    className="text-neon-500 hover:text-neon-400"
                   >
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4 text-gray-400" />
                   </AnimatedButton>
                 </div>
-              </AnimatedCard>
-
+              </div>
+              
               {/* Balance */}
-              <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  { currency: 'ETH', amount: userProfile.wallet.balance.ETH, color: 'text-blue-400' },
-                  { currency: 'MTP', amount: userProfile.wallet.balance.MTP, color: 'text-neon-400' },
-                  { currency: 'USDT', amount: userProfile.wallet.balance.USDT, color: 'text-green-400' }
-                ].map((balance) => (
-                  <AnimatedCard key={balance.currency} className="p-6 text-center">
-                    <div className={cn("text-3xl font-tech font-bold mb-2", balance.color)}>
-                      {showPrivateInfo ? balance.amount.toLocaleString() : '***'}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {Object.entries(userProfile.wallet.balance).map(([currency, amount]) => (
+                  <div key={currency} className="card-gaming text-center">
+                    <div className="text-2xl font-bold text-white mb-2">
+                      {showPrivateInfo ? amount.toFixed(4) : '****'}
                     </div>
-                    <div className="text-gray-400">{balance.currency}</div>
-                  </AnimatedCard>
+                    <div className="text-gray-400 mb-4">{currency}</div>
+                    <div className="flex space-x-2">
+                      <AnimatedButton
+                        variant="primary"
+                        size="sm"
+                        className="flex-1 flex items-center justify-center"
+                      >
+                        <Download className="w-3 h-3 mr-1" />
+                        充值
+                      </AnimatedButton>
+                      <AnimatedButton
+                        variant="secondary"
+                        size="sm"
+                        className="flex-1 flex items-center justify-center"
+                      >
+                        <Upload className="w-3 h-3 mr-1" />
+                        提现
+                      </AnimatedButton>
+                    </div>
+                  </div>
                 ))}
               </div>
-
-              {/* Actions */}
-              <div className="flex space-x-4">
-                <AnimatedButton className="flex-1 bg-green-500 hover:bg-green-600 text-white">
-                  <Download className="w-4 h-4 mr-2" />
-                  充值
-                </AnimatedButton>
-                <AnimatedButton className="flex-1 bg-red-500 hover:bg-red-600 text-white">
-                  <Upload className="w-4 h-4 mr-2" />
-                  提现
-                </AnimatedButton>
-              </div>
-
+              
               {/* Transaction History */}
-              <AnimatedCard className="p-6">
+              <div className="card-gaming">
                 <h3 className="text-xl font-tech font-bold text-white mb-4">交易记录</h3>
                 <div className="space-y-3">
                   {userProfile.wallet.transactions.map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between p-3 bg-primary-700 rounded-lg">
-                      <div className="flex items-center space-x-3">
+                    <div key={tx.id} className="flex items-center space-x-4 p-3 bg-primary-800 rounded-lg">
+                      <div className="p-2 bg-primary-700 rounded-lg">
                         {getTransactionIcon(tx.type)}
-                        <div>
-                          <div className="text-white font-medium">{tx.description}</div>
-                          <div className="text-gray-400 text-sm">{formatDateTime(tx.timestamp)}</div>
-                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-white font-medium">{tx.description}</div>
+                        <div className="text-gray-400 text-sm">{formatTime(tx.timestamp)}</div>
                       </div>
                       <div className="text-right">
                         <div className={cn(
-                          "font-mono font-bold",
+                          "font-bold",
                           tx.amount > 0 ? 'text-green-400' : 'text-red-400'
                         )}>
                           {tx.amount > 0 ? '+' : ''}{tx.amount} {tx.currency}
@@ -714,7 +685,7 @@ const Profile: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </AnimatedCard>
+              </div>
             </div>
           )}
 
@@ -722,11 +693,11 @@ const Profile: React.FC = () => {
           {activeTab === 'achievements' && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-2xl font-tech font-bold text-white mb-2">我的成就</h2>
-                <p className="text-gray-400">展示你在游戏中获得的荣誉和成就</p>
+                <h2 className="text-2xl font-tech font-bold text-white mb-2">成就系统</h2>
+                <p className="text-gray-400">展示你的游戏成就和荣誉</p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {userProfile.achievements.map((achievement, index) => (
                   <ScrollAnimation key={achievement.id} delay={index * 0.1}>
                     <AnimatedCard className="text-center space-y-4">
