@@ -61,6 +61,7 @@ router.get('/', (req, res) => {
       nft: '/api/nft',
       admin: '/api/admin',
     },
+    documentation: 'https://docs.metatopia.com/api',
   });
 });
 
