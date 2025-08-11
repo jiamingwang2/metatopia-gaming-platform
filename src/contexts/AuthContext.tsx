@@ -97,6 +97,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         // 保存 token 到本地存储
         tokenUtils.setToken(token);
+        if (response.data.refreshToken) {
+          tokenUtils.setRefreshToken(response.data.refreshToken);
+        }
         
         dispatch({ 
           type: 'AUTH_SUCCESS', 
@@ -134,6 +137,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         // 保存 token 到本地存储
         tokenUtils.setToken(token);
+        if (response.data.refreshToken) {
+          tokenUtils.setRefreshToken(response.data.refreshToken);
+        }
         
         dispatch({ 
           type: 'AUTH_SUCCESS', 
@@ -173,14 +179,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // 刷新 token
   const refreshToken = async (): Promise<boolean> => {
     try {
-      const currentToken = tokenUtils.getToken();
-      if (!currentToken) return false;
+      const currentRefreshToken = tokenUtils.getRefreshToken();
+      if (!currentRefreshToken) {
+        console.log('No refresh token found');
+        return false;
+      }
 
       const response = await authAPI.refreshToken();
       
       if (response.success && response.data) {
         const { user, token } = response.data;
         tokenUtils.setToken(token);
+        if (response.data.refreshToken) {
+          tokenUtils.setRefreshToken(response.data.refreshToken);
+        }
         dispatch({ 
           type: 'AUTH_SUCCESS', 
           payload: { user, token } 
@@ -188,10 +200,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return true;
       }
       
+      console.log('Refresh token failed:', response.message);
       return false;
     } catch (error) {
       console.error('Token refresh failed:', error);
-      logout();
       return false;
     }
   };
@@ -208,9 +220,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       // 检查 token 是否过期
       if (tokenUtils.isTokenExpired(token)) {
+        console.log('Token expired, attempting refresh...');
         const refreshed = await refreshToken();
         if (!refreshed) {
+          console.log('Token refresh failed, logging out');
           dispatch({ type: 'SET_LOADING', payload: false });
+          logout();
           return false;
         }
         return true;
@@ -226,12 +241,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         return true;
       } else {
-        logout();
+        console.log('Get current user failed:', response.message);
+        // 不要立即登出，可能是网络问题
+        dispatch({ type: 'SET_LOADING', payload: false });
         return false;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      logout();
+      // 网络错误不应该导致登出
+      dispatch({ type: 'SET_LOADING', payload: false });
       return false;
     }
   };
