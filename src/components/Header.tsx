@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, Gamepad2, Trophy, Users, ShoppingBag, GraduationCap, User, HelpCircle, LogOut, Settings, Wallet } from 'lucide-react'
+import { Menu, X, Gamepad2, Trophy, Users, ShoppingBag, GraduationCap, User, HelpCircle, LogOut, Settings, Wallet, TrendingUp } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -17,6 +17,7 @@ const Header: React.FC = () => {
     { name: '电竞竞技', href: '/esports', icon: Trophy },
     { name: '社交广场', href: '/social', icon: Users },
     { name: 'NFT市场', href: '/nft', icon: ShoppingBag },
+    { name: '项目投资', href: '/projects', icon: TrendingUp },
     { name: '学习学院', href: '/academy', icon: GraduationCap },
     { name: '个人中心', href: '/profile', icon: User },
     { name: '帮助支持', href: '/help', icon: HelpCircle },
